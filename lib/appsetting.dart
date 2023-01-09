@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/screens/user/login_controller.dart';
 
+import 'screens/todo/to_do_controller.dart';
+
 final apiMessageStateProvider = StateProvider<String>((ref) => '');
 
 final screenStateProvider = StateProvider<int>((ref) => 0);
@@ -30,5 +32,7 @@ class AppSetting {
   Future<void> isLoggedIn(BuildContext context) async {
     await Future.delayed(const Duration(seconds: 1));
     await ref.watch(loginStateNotifierProvider.notifier).initLogin();
+    ref.invalidate(todoNotifierProvider);
+    ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString());
   }
 }

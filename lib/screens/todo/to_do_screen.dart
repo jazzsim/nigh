@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:nigh/appsetting.dart';
 import 'package:nigh/apptheme.dart';
 import 'package:nigh/screens/todo/to_do_controller.dart';
 import 'package:weekly_date_picker/weekly_date_picker.dart';
@@ -24,138 +25,157 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
   bool _weekAnimation = true, _loaded = false;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance
-        .addPostFrameCallback((_) => ref.watch(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString()).then((value) => _loaded = true));
-  }
-
-  @override
   Widget build(BuildContext context) {
     List<Todo> todoList = ref.watch(todoNotifierProvider)[ref.watch(datetimeStateProvider).toString().substring(0, 10)] ?? [];
 
-    return Scaffold(
-      body: Column(
-        children: [
-          GestureDetector(
-            onTap: () {
-              _weekAnimation = !_weekAnimation;
-              setState(() {});
-            },
-            child: Card(
-              elevation: 0,
-              margin: EdgeInsets.zero,
-              color: Colors.transparent,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(DateFormat.yMMMEd().format(ref.watch(datetimeStateProvider))),
-                  RotateAnimation(
-                    rotate: _weekAnimation,
-                    child: const Icon(
-                      Icons.arrow_drop_down,
-                      color: textPrimary,
-                    ),
-                  )
-                ],
+    ref.listen<bool>(loadedStateProvider, ((previous, next) {
+      _loaded = next;
+    }));
+
+    return RefreshIndicator(
+      onRefresh: (() => _getData()),
+      color: textPrimary,
+      backgroundColor: backgroundSecondary,
+      child: Scaffold(
+        body: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                _weekAnimation = !_weekAnimation;
+                setState(() {});
+              },
+              child: Card(
+                elevation: 0,
+                margin: EdgeInsets.zero,
+                color: Colors.transparent,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(DateFormat.yMMMEd().format(ref.watch(datetimeStateProvider))),
+                    RotateAnimation(
+                      rotate: _weekAnimation,
+                      child: const Icon(
+                        Icons.arrow_drop_down,
+                        color: textPrimary,
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
-          ),
-          ExpansionAnimation(
-            expand: _weekAnimation,
-            child: WeeklyDatePicker(
-              selectedDay: ref.watch(datetimeStateProvider),
-              changeDay: (value) => setState(() {
-                ref.watch(datetimeStateProvider.notifier).state = value;
-                _loaded = false;
-                ref.watch(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString()).then((value) {
-                  _loaded = true;
-                });
-              }),
-              enableWeeknumberText: false,
-              weeknumberColor: themePrimary,
-              weeknumberTextColor: textPrimary,
-              backgroundColor: backgroundPrimary,
-              weekdayTextColor: textSecondary,
-              digitsColor: Colors.white,
-              selectedBackgroundColor: themePrimary,
-              weekdays: const ["Mo", "Tu", "We", "Th", "Fr", "Sat", "Sun"],
-              daysInWeek: 7,
+            ExpansionAnimation(
+              expand: _weekAnimation,
+              child: WeeklyDatePicker(
+                selectedDay: ref.watch(datetimeStateProvider),
+                changeDay: (value) => setState(() {
+                  ref.watch(datetimeStateProvider.notifier).state = value;
+                  _loaded = false;
+                  ref.watch(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString()).then((value) {
+                    _loaded = true;
+                  });
+                }),
+                enableWeeknumberText: false,
+                weeknumberColor: themePrimary,
+                weeknumberTextColor: textPrimary,
+                backgroundColor: backgroundPrimary,
+                weekdayTextColor: textSecondary,
+                digitsColor: Colors.white,
+                selectedBackgroundColor: themePrimary,
+                weekdays: const ["Mo", "Tu", "We", "Th", "Fr", "Sat", "Sun"],
+                daysInWeek: 7,
+              ),
             ),
-          ),
-          _loaded
-              ? ListView(
-                  shrinkWrap: true,
-                  children: [
-                    // for (final value in todoList.values)
-                    for (final todo in todoList)
-                      Dismissible(
-                        key: UniqueKey(),
-                        background: Container(
-                          color: themePrimary,
-                          child: Align(
-                            alignment: Alignment.centerRight,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const Text(
-                                  'Remove',
-                                  textAlign: TextAlign.end,
-                                  style: TextStyle(fontWeight: FontWeight.bold, color: textPrimary),
-                                ).pr(5),
-                                const Icon(
-                                  Icons.delete,
-                                  color: textPrimary,
-                                ).pr(10)
-                              ],
+            _loaded
+                ? ListView(
+                    shrinkWrap: true,
+                    children: todoList.isEmpty
+                        ? [
+                            Container(
+                              padding: const EdgeInsets.all(20.0),
+                              constraints: BoxConstraints(
+                                minHeight: MediaQuery.of(context).size.height / 2,
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Empty',
+                                  style: ref.watch(textThemeProvider(context)).bodyMedium?.copyWith(color: textSecondary),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        direction: DismissDirection.endToStart,
-                        onDismissed: (_) async {
-                          int index = todoList.indexOf(todo);
-                          Todo deletedItem = todoList.removeAt(index);
-                          ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                                backgroundColor: Colors.transparent,
-                                content: Container(
-                                  padding: const EdgeInsets.all(18),
-                                  decoration: const BoxDecoration(
-                                      color: themePrimary,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(13),
-                                      )),
-                                  child: Text('Deleting ${todo.title}'),
-                                ),
-                                action: SnackBarAction(
-                                  onPressed: () => setState(() {
-                                    todoList.add(deletedItem);
-                                  }),
-                                  label: 'Undo',
-                                ),
-                                behavior: SnackBarBehavior.floating,
-                              ))
-                              .closed
-                              .then((reason) {
-                            if (reason != SnackBarClosedReason.action) {
-                              ref.watch(todoNotifierProvider.notifier).delete(todo.id);
-                            }
-                          });
-                        },
-                        child: CheckboxLT(
-                          todo: todo,
-                        ),
-                      ),
-                  ],
-                )
-              : const Center(
-                  child: CircularProgressIndicator(),
-                ).exp(),
-          const Expanded(child: SizedBox()),
-        ],
+                          ]
+                        : todoList
+                            .map((todo) => Dismissible(
+                                  key: UniqueKey(),
+                                  background: Container(
+                                    color: themePrimary,
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          const Text(
+                                            'Remove',
+                                            textAlign: TextAlign.end,
+                                            style: TextStyle(fontWeight: FontWeight.bold, color: textPrimary),
+                                          ).pr(5),
+                                          const Icon(
+                                            Icons.delete,
+                                            color: textPrimary,
+                                          ).pr(10)
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  direction: DismissDirection.endToStart,
+                                  onDismissed: (_) async {
+                                    int index = todoList.indexOf(todo);
+                                    Todo deletedItem = todoList.removeAt(index);
+                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                          backgroundColor: Colors.transparent,
+                                          content: Container(
+                                            padding: const EdgeInsets.all(18),
+                                            decoration: const BoxDecoration(
+                                                color: themePrimary,
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(13),
+                                                )),
+                                            child: Text('Deleting ${todo.title}'),
+                                          ),
+                                          action: SnackBarAction(
+                                            onPressed: () => setState(() {
+                                              todoList.add(deletedItem);
+                                            }),
+                                            label: 'Undo',
+                                          ),
+                                          behavior: SnackBarBehavior.floating,
+                                        ))
+                                        .closed
+                                        .then((reason) {
+                                      if (reason != SnackBarClosedReason.action) {
+                                        ref.watch(todoNotifierProvider.notifier).delete(todo.id);
+                                      }
+                                    });
+                                  },
+                                  child: CheckboxLT(
+                                    todo: todo,
+                                  ),
+                                ))
+                            .toList())
+                : const Center(
+                    child: CircularProgressIndicator(),
+                  ).exp(),
+            const Expanded(child: SizedBox()),
+          ],
+        ),
       ),
     );
+  }
+
+  Future<void> _getData() async {
+    ref.invalidate(todoNotifierProvider);
+    await ref.watch(todoNotifierProvider.notifier).getTodos(DateTime.now().toString());
   }
 }
 
