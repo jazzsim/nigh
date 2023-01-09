@@ -7,11 +7,11 @@ import '../../appsetting.dart';
 
 final registerStateNotifierProvider = StateNotifierProvider<RegisterStateNotifier, RegisterState>((ref) => RegisterStateNotifier(ref));
 
-enum RegisterState { idle, failed, loading, loggedin }
+enum RegisterState { guest, failed, loading, loggedin }
 
 class RegisterStateNotifier extends StateNotifier<RegisterState> {
   StateNotifierProviderRef ref;
-  RegisterStateNotifier(this.ref) : super(RegisterState.idle);
+  RegisterStateNotifier(this.ref) : super(RegisterState.guest);
 
   Future<User?> register(String username, String password, String firstname, String lastname) async {
     state = RegisterState.loading;

@@ -5,6 +5,8 @@ import 'package:nigh/api/todo_api.dart';
 
 import '../../api/model/todo.dart';
 
+final loadedStateProvider = StateProvider<bool>((ref) => false);
+
 final datetimeStateProvider = StateProvider<DateTime>((ref) => DateTime.now());
 
 final dateStateProvider = StateProvider<String>((ref) => ref.watch(datetimeStateProvider).toString().substring(0, 10));
@@ -16,6 +18,7 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
   TodosNotifier(this.ref) : super({});
 
   Future<void> getTodos(String date) async {
+    ref.watch(loadedStateProvider.notifier).state = false;
     String cleanDate = date.substring(0, 10);
 
     if (state.isNotEmpty) {
@@ -33,6 +36,7 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
     } else {
       state = {...state, cleanDate: []};
     }
+    ref.watch(loadedStateProvider.notifier).state = true;
   }
 
   Future<void> add(Todo todo) async {

@@ -4,7 +4,6 @@ import 'package:retrofit/retrofit.dart';
 import '../api_client.dart';
 import '../api_response.dart';
 import '../constant.dart';
-import 'model/todo.dart';
 import 'model/user.dart';
 
 part 'user_api.g.dart';

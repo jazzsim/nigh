@@ -104,8 +104,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   .then((value) async {
                                 await globalSharedPrefs.setString('api_key', value?.token ?? '');
                                 await ApiClient.setHeader();
+                                ref.invalidate(todoNotifierProvider);
                                 ref.invalidate(datetimeStateProvider);
-                                ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString());
+                                await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString());
                                 if (!mounted) return;
                                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                 messageSnackbar(context, ref.watch(apiMessageStateProvider));
