@@ -32,7 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   void initState() {
     super.initState();
     ref.read(appSettingProvider).initializeApp(context).then((value) {
-      _loginMessage = ref.read(loginStateNotifierProvider) == LoginState.failed;
+      _loginMessage = ref.read(loginStateNotifierProvider) == LoginState.guest;
     });
   }
 
@@ -158,29 +158,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       child: Column(
                         children: [
                           const DrawerHeader(child: Logo()),
-                          ref.watch(loginStateNotifierProvider) == LoginState.loggedin
+                          Column(
+                            children: [
+                              const Divider(
+                                color: textSecondary,
+                                height: 0,
+                              ),
+                              ListTile(
+                                  title: RichText(
+                                      maxLines: 3,
+                                      text: TextSpan(
+                                          text: 'Logged in as ',
+                                          style: ref
+                                              .watch(textThemeProvider(context))
+                                              .bodyMedium
+                                              ?.copyWith(fontSize: ref.watch(textThemeProvider(context)).titleLarge?.fontSize, color: textPrimary),
+                                          children: [
+                                            TextSpan(
+                                                text: ref.watch(userNotifierProvider).username,
+                                                style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary))
+                                          ]))),
+                            ],
+                          ),
+                          ref.watch(loginStateNotifierProvider) != LoginState.loggedin
                               ? Column(
-                                  children: [
-                                    const Divider(
-                                      color: textSecondary,
-                                      height: 0,
-                                    ),
-                                    ListTile(
-                                        title: RichText(
-                                            text: TextSpan(
-                                                text: 'Logged in as ',
-                                                style: ref
-                                                    .watch(textThemeProvider(context))
-                                                    .bodyMedium
-                                                    ?.copyWith(fontSize: ref.watch(textThemeProvider(context)).titleLarge?.fontSize, color: textPrimary),
-                                                children: [
-                                          TextSpan(
-                                              text: ref.watch(userNotifierProvider).username,
-                                              style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary))
-                                        ]))),
-                                  ],
-                                )
-                              : Column(
                                   children: [
                                     const Divider(
                                       color: textSecondary,
@@ -206,11 +207,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       ),
                                       onTap: () => Navigator.of(context).push(RegisterScreen.route()),
                                     ),
-                                    const ListTile(
-                                      enabled: false,
-                                    ),
                                   ],
-                                ),
+                                )
+                              : const SizedBox(),
                           const Divider(
                             color: textSecondary,
                             height: 0,
@@ -253,17 +252,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         'Log Out',
                                         style: TextStyle(color: Colors.red),
                                       ),
-                                      onTap: () {
+                                      onTap: () async {
                                         ref.watch(loginStateNotifierProvider.notifier).loading();
-                                        globalSharedPrefs.setString('api_key', '').then((value) async {
+                                        await globalSharedPrefs.setString('api_key', '').then((value) async {
                                           await ApiClient.setHeader();
-                                          ref.invalidate(screenStateProvider);
-                                          ref.invalidate(todoNotifierProvider);
-                                          ref.watch(loginStateNotifierProvider.notifier).logout();
-                                          if (!mounted) return;
-                                          messageSnackbar(context, 'Logged out');
-                                          Navigator.of(context).pop();
                                         });
+                                        await ref.watch(loginStateNotifierProvider.notifier).initLogin();
+                                        ref.invalidate(screenStateProvider);
+                                        ref.invalidate(todoNotifierProvider);
+                                        await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString());
+                                        if (!mounted) return;
+                                        messageSnackbar(context, 'Logged out');
+                                        Navigator.of(context).pop();
                                       },
                                     ),
                                   ],

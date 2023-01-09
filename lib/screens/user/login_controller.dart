@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/screens/user/user_controller.dart';
 
 import '../../api/model/user.dart';
 import '../../api/user_api.dart';
+import '../../api_client.dart';
 import '../../appsetting.dart';
 import '../../constant.dart';
 
@@ -10,7 +13,7 @@ final hidePasswordStateProvider = StateProvider.autoDispose<bool>((ref) => true)
 
 final loginStateNotifierProvider = StateNotifierProvider<LoginStateNotifier, LoginState>((ref) => LoginStateNotifier(ref));
 
-enum LoginState { idle, failed, loading, loggedin }
+enum LoginState { idle, guest, loading, loggedin }
 
 class LoginStateNotifier extends StateNotifier<LoginState> {
   StateNotifierProviderRef ref;
@@ -20,10 +23,12 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
     final userApi = UserApi();
     await userApi.login(username: username, password: password).then((value) async {
       await globalSharedPrefs.setString('api_key', value.response.token ?? '');
+      await ApiClient.setHeader();
       state = LoginState.loggedin;
+      if (value.response.isGuest == true) state = LoginState.guest;
       ref.watch(userNotifierProvider.notifier).state = value.response;
     }).catchError((err, st) {
-      state = LoginState.failed;
+      state = LoginState.guest;
     });
   }
 
@@ -31,7 +36,7 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
     state = LoginState.loading;
     final userApi = UserApi();
     final res = await userApi.login(username: username, password: password).onError((error, stackTrace) {
-      state = LoginState.failed;
+      state = LoginState.guest;
       throw error!;
     });
     ref.watch(apiMessageStateProvider.notifier).state = res.message;
@@ -40,7 +45,7 @@ class LoginStateNotifier extends StateNotifier<LoginState> {
     return res.response;
   }
 
-  void logout() => state = LoginState.idle;
+  void logout() => state = LoginState.guest;
 
   void loading() => state = LoginState.loading;
 
