@@ -82,7 +82,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       splashRadius: 0.1,
                       icon: Icon(
                         ref.watch(hidePasswordStateProvider) ? Icons.visibility_off : Icons.visibility, //change icon based on boolean value
-                        // color: Theme.of(context).primaryColorDark,
+                        color: Theme.of(context).primaryColorDark,
                       ),
                       onPressed: () {
                         ref.watch(hidePasswordStateProvider.notifier).state = !ref.watch(hidePasswordStateProvider);
@@ -105,8 +105,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 await globalSharedPrefs.setString('api_key', value?.token ?? '');
                                 await ApiClient.setHeader();
                                 ref.invalidate(todoNotifierProvider);
-                                ref.invalidate(datetimeStateProvider);
-                                await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString());
+                                ref.invalidate(todoDatetimeStateProvider);
+                                await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
                                 if (!mounted) return;
                                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                 messageSnackbar(context, ref.watch(apiMessageStateProvider));
