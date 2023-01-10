@@ -9,11 +9,11 @@ import 'package:nigh/screens/user/user_controller.dart';
 
 import '../../appsetting.dart';
 import '../animation/expansion_animation.dart';
-import '../api/model/todo.dart';
 import '../api_client.dart';
 import '../components/logo.dart';
 import '../components/snackbar.dart';
 import '../constant.dart';
+import 'diary/edit_diary_screen.dart';
 import 'diary/diary_screen.dart';
 import 'todo/to_do_controller.dart';
 
@@ -50,7 +50,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Scaffold(
                 appBar: ref.watch(screenStateProvider) == 0
                     ? AppBar(title: const Text('To Do'), actions: [
-                        ref.watch(datetimeStateProvider).day == DateTime.now().day || ref.watch(datetimeStateProvider).isAfter(DateTime.now())
+                        ref.watch(todoDatetimeStateProvider).day == DateTime.now().day || ref.watch(todoDatetimeStateProvider).isAfter(DateTime.now())
                             ? IconButton(
                                 splashRadius: 0.1,
                                 onPressed: () {
@@ -81,12 +81,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                                   TextButton(
                                                       onPressed: () {
                                                         if (ref.watch(todoTextEditingStateProvider).text.isEmpty) return;
-                                                        Todo todo = Todo(
-                                                            id: ref.watch(todoNotifierProvider).length,
-                                                            date: ref.watch(datetimeStateProvider).toString(),
-                                                            title: ref.watch(todoTextEditingStateProvider).text,
-                                                            completed: false);
-                                                        ref.watch(todoNotifierProvider.notifier).add(todo);
+                                                        ref.watch(todoNotifierProvider.notifier).add();
                                                         Navigator.of(context).pop();
                                                       },
                                                       child: const Text('Add'))
@@ -102,55 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ])
                     : AppBar(
                         title: const Text('Diary'),
-                        actions: [
-                          IconButton(
-                              splashRadius: 0.1,
-                              onPressed: () {
-                                ref.watch(todoTextEditingStateProvider).text = '';
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Dialog(
-                                        backgroundColor: backgroundPrimary,
-                                        child: Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              'Add New To do',
-                                              style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
-                                            ).p(15),
-                                            TextFormField(
-                                              autofocus: true,
-                                              textCapitalization: TextCapitalization.sentences,
-                                              controller: ref.watch(todoTextEditingStateProvider),
-                                              style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
-                                              minLines: 1,
-                                              maxLines: 1,
-                                            ).pLTRB(20, 0, 20, 0),
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.end,
-                                              children: [
-                                                TextButton(
-                                                    onPressed: () {
-                                                      if (ref.watch(todoTextEditingStateProvider).text.isEmpty) return;
-                                                      Todo todo = Todo(
-                                                          id: ref.watch(todoNotifierProvider).length,
-                                                          date: ref.watch(datetimeStateProvider).toString(),
-                                                          title: ref.watch(todoTextEditingStateProvider).text,
-                                                          completed: false);
-                                                      ref.watch(todoNotifierProvider.notifier).add(todo);
-                                                      Navigator.of(context).pop();
-                                                    },
-                                                    child: const Text('Add'))
-                                              ],
-                                            ).pt(10)
-                                          ],
-                                        ).p(10),
-                                      );
-                                    });
-                              },
-                              icon: const Icon(Icons.add))
-                        ],
+                        actions: [IconButton(splashRadius: 0.1, onPressed: () => Navigator.of(context).push(EditDiaryScreen.route()), icon: const Icon(Icons.add))],
                       ),
                 drawer: Drawer(
                     backgroundColor: backgroundPrimary,
@@ -260,7 +207,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         await ref.watch(loginStateNotifierProvider.notifier).initLogin();
                                         ref.invalidate(screenStateProvider);
                                         ref.invalidate(todoNotifierProvider);
-                                        await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString());
+                                        await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
                                         if (!mounted) return;
                                         messageSnackbar(context, 'Logged out');
                                         Navigator.of(context).pop();
@@ -340,10 +287,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         children: ref.watch(screenStateProvider) == 0
                                             ? [const Icon(Icons.today, color: backgroundPrimary), const Text('Todo', style: TextStyle(color: backgroundPrimary))]
                                             : [
-                                                const Icon(Icons.today_outlined, color: textPrimary),
+                                                const Icon(Icons.today_outlined, color: textSecondary),
                                                 const Text(
                                                   'Todo',
-                                                  style: TextStyle(color: textPrimary),
+                                                  style: TextStyle(color: textSecondary),
                                                 )
                                               ],
                                       ),
@@ -370,41 +317,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                             : [
                                                 const Icon(
                                                   Icons.book_outlined,
-                                                  color: textPrimary,
+                                                  color: textSecondary,
                                                 ),
                                                 const Text(
                                                   'Diary',
-                                                  style: TextStyle(color: textPrimary),
+                                                  style: TextStyle(color: textSecondary),
                                                 )
                                               ],
                                       ),
                                     ),
-                                    // child: Card(
-                                    //   color: ref.watch(screenStateProvider) == 1 ? themePrimary : backgroundPrimary,
-                                    //   elevation: 0,
-                                    //   margin: EdgeInsets.zero,
-                                    //   child: Column(
-                                    //     mainAxisAlignment: MainAxisAlignment.center,
-                                    //     children: ref.watch(screenStateProvider) == 1
-                                    //         ? [
-                                    //             const Icon(
-                                    //               Icons.book,
-                                    //               color: backgroundPrimary,
-                                    //             ),
-                                    //             const Text('Diary', style: TextStyle(color: backgroundPrimary)),
-                                    //           ]
-                                    //         : [
-                                    //             const Icon(
-                                    //               Icons.book_outlined,
-                                    //               color: textPrimary,
-                                    //             ),
-                                    //             const Text(
-                                    //               'Diary',
-                                    //               style: TextStyle(color: textPrimary),
-                                    //             )
-                                    //           ],
-                                    //   ),
-                                    // ),
                                   )),
                                 ],
                               ),

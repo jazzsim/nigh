@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nigh/screens/diary/diary_controller.dart';
 import 'package:nigh/screens/user/login_controller.dart';
 
 import 'screens/todo/to_do_controller.dart';
@@ -33,6 +34,7 @@ class AppSetting {
     await Future.delayed(const Duration(seconds: 1));
     await ref.watch(loginStateNotifierProvider.notifier).initLogin();
     ref.invalidate(todoNotifierProvider);
-    ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString());
+    ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
+    ref.read(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
   }
 }

@@ -26,9 +26,9 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    List<Todo> todoList = ref.watch(todoNotifierProvider)[ref.watch(datetimeStateProvider).toString().substring(0, 10)] ?? [];
+    List<Todo> todoList = ref.watch(todoNotifierProvider)[ref.watch(todoDatetimeStateProvider).toString().substring(0, 10)] ?? [];
 
-    ref.listen<bool>(loadedStateProvider, ((previous, next) {
+    ref.listen<bool>(todoLoadedStateProvider, ((previous, next) {
       _loaded = next;
     }));
 
@@ -51,7 +51,7 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(DateFormat.yMMMEd().format(ref.watch(datetimeStateProvider))),
+                    Text(DateFormat.yMMMEd().format(ref.watch(todoDatetimeStateProvider))),
                     RotateAnimation(
                       rotate: _weekAnimation,
                       child: const Icon(
@@ -66,11 +66,11 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
             ExpansionAnimation(
               expand: _weekAnimation,
               child: WeeklyDatePicker(
-                selectedDay: ref.watch(datetimeStateProvider),
+                selectedDay: ref.watch(todoDatetimeStateProvider),
                 changeDay: (value) => setState(() {
-                  ref.watch(datetimeStateProvider.notifier).state = value;
+                  ref.watch(todoDatetimeStateProvider.notifier).state = value;
                   _loaded = false;
-                  ref.watch(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString()).then((value) {
+                  ref.watch(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString()).then((value) {
                     _loaded = true;
                   });
                 }),
@@ -87,82 +87,84 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
             ),
             _loaded
                 ? ListView(
-                    shrinkWrap: true,
-                    children: todoList.isEmpty
-                        ? [
-                            Container(
-                              padding: const EdgeInsets.all(20.0),
-                              constraints: BoxConstraints(
-                                minHeight: MediaQuery.of(context).size.height / 2,
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Empty',
-                                  style: ref.watch(textThemeProvider(context)).bodyMedium?.copyWith(color: textSecondary),
-                                ),
-                              ),
-                            ),
-                          ]
-                        : todoList
-                            .map((todo) => Dismissible(
-                                  key: UniqueKey(),
-                                  background: Container(
-                                    color: themePrimary,
-                                    child: Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          const Text(
-                                            'Remove',
-                                            textAlign: TextAlign.end,
-                                            style: TextStyle(fontWeight: FontWeight.bold, color: textPrimary),
-                                          ).pr(5),
-                                          const Icon(
-                                            Icons.delete,
-                                            color: textPrimary,
-                                          ).pr(10)
-                                        ],
-                                      ),
+                        shrinkWrap: true,
+                        physics: todoList.isEmpty ? const NeverScrollableScrollPhysics() : null,
+                        children: todoList.isEmpty
+                            ? [
+                                Container(
+                                  padding: const EdgeInsets.all(20.0),
+                                  constraints: BoxConstraints(
+                                    minHeight: MediaQuery.of(context).size.height / 2,
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      'Empty',
+                                      style: ref.watch(textThemeProvider(context)).bodyMedium?.copyWith(color: textSecondary),
                                     ),
                                   ),
-                                  direction: DismissDirection.endToStart,
-                                  onDismissed: (_) async {
-                                    int index = todoList.indexOf(todo);
-                                    Todo deletedItem = todoList.removeAt(index);
-                                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                          backgroundColor: Colors.transparent,
-                                          content: Container(
-                                            padding: const EdgeInsets.all(18),
-                                            decoration: const BoxDecoration(
-                                                color: themePrimary,
-                                                borderRadius: BorderRadius.all(
-                                                  Radius.circular(13),
-                                                )),
-                                            child: Text('Deleting ${todo.title}'),
+                                ),
+                              ]
+                            : todoList
+                                .map((todo) => Dismissible(
+                                      key: UniqueKey(),
+                                      background: Container(
+                                        color: themePrimary,
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              const Text(
+                                                'Remove',
+                                                textAlign: TextAlign.end,
+                                                style: TextStyle(fontWeight: FontWeight.bold, color: textPrimary),
+                                              ).pr(5),
+                                              const Icon(
+                                                Icons.delete,
+                                                color: textPrimary,
+                                              ).pr(10)
+                                            ],
                                           ),
-                                          action: SnackBarAction(
-                                            onPressed: () => setState(() {
-                                              todoList.add(deletedItem);
-                                            }),
-                                            label: 'Undo',
-                                          ),
-                                          behavior: SnackBarBehavior.floating,
-                                        ))
-                                        .closed
-                                        .then((reason) {
-                                      if (reason != SnackBarClosedReason.action) {
-                                        ref.watch(todoNotifierProvider.notifier).delete(todo.id);
-                                      }
-                                    });
-                                  },
-                                  child: CheckboxLT(
-                                    todo: todo,
-                                  ),
-                                ))
-                            .toList())
+                                        ),
+                                      ),
+                                      direction: DismissDirection.endToStart,
+                                      onDismissed: (_) async {
+                                        int index = todoList.indexOf(todo);
+                                        Todo deletedItem = todoList.removeAt(index);
+                                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(SnackBar(
+                                              backgroundColor: Colors.transparent,
+                                              content: Container(
+                                                padding: const EdgeInsets.all(18),
+                                                decoration: const BoxDecoration(
+                                                    color: themePrimary,
+                                                    borderRadius: BorderRadius.all(
+                                                      Radius.circular(13),
+                                                    )),
+                                                child: Text('Deleting ${todo.title}'),
+                                              ),
+                                              action: SnackBarAction(
+                                                onPressed: () => setState(() {
+                                                  todoList.add(deletedItem);
+                                                }),
+                                                label: 'Undo',
+                                              ),
+                                              behavior: SnackBarBehavior.floating,
+                                            ))
+                                            .closed
+                                            .then((reason) {
+                                          if (reason != SnackBarClosedReason.action) {
+                                            ref.watch(todoNotifierProvider.notifier).delete(todo.id);
+                                          }
+                                        });
+                                      },
+                                      child: CheckboxLT(
+                                        todo: todo,
+                                      ),
+                                    ))
+                                .toList())
+                    .exp()
                 : const Center(
                     child: CircularProgressIndicator(),
                   ).exp(),
@@ -175,7 +177,7 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
 
   Future<void> _getData() async {
     ref.invalidate(todoNotifierProvider);
-    await ref.watch(todoNotifierProvider.notifier).getTodos(DateTime.now().toString());
+    await ref.watch(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
   }
 }
 

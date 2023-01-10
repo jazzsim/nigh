@@ -18,12 +18,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
           scaffoldBackgroundColor: backgroundPrimary,
-          appBarTheme: const AppBarTheme(elevation: 0, foregroundColor: themePrimary, backgroundColor: backgroundPrimary),
+          appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0, foregroundColor: themePrimary, backgroundColor: backgroundPrimary),
           backgroundColor: backgroundPrimary,
           brightness: Brightness.light,
+          snackBarTheme: const SnackBarThemeData(backgroundColor: themePrimary),
           textTheme: const TextTheme(
             bodyText1: TextStyle(),
             bodyText2: TextStyle(),
@@ -34,7 +36,6 @@ class MyApp extends StatelessWidget {
           ),
           primarySwatch: createMaterialColor(themePrimary),
           unselectedWidgetColor: textPrimary),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       home: const HomeScreen(),
     );
   }

@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/api/todo_api.dart';
+import 'package:nigh/screens/todo/to_do_screen.dart';
 
 import '../../api/model/todo.dart';
 
-final loadedStateProvider = StateProvider<bool>((ref) => false);
+final todoLoadedStateProvider = StateProvider<bool>((ref) => false);
 
-final datetimeStateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+final todoDatetimeStateProvider = StateProvider<DateTime>((ref) => DateTime.now());
 
-final dateStateProvider = StateProvider<String>((ref) => ref.watch(datetimeStateProvider).toString().substring(0, 10));
+final dateStateProvider = StateProvider<String>((ref) => ref.watch(todoDatetimeStateProvider).toString().substring(0, 10));
 
 final todoNotifierProvider = StateNotifierProvider<TodosNotifier, Map<String, List<Todo>>>((ref) => TodosNotifier(ref));
 
@@ -18,7 +19,7 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
   TodosNotifier(this.ref) : super({});
 
   Future<void> getTodos(String date) async {
-    ref.watch(loadedStateProvider.notifier).state = false;
+    ref.watch(todoLoadedStateProvider.notifier).state = false;
     String cleanDate = date.substring(0, 10);
 
     if (state.isNotEmpty) {
@@ -36,12 +37,12 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
     } else {
       state = {...state, cleanDate: []};
     }
-    ref.watch(loadedStateProvider.notifier).state = true;
+    ref.watch(todoLoadedStateProvider.notifier).state = true;
   }
 
-  Future<void> add(Todo todo) async {
+  Future<void> add() async {
     final todoApi = TodoApi();
-    final res = await todoApi.addTodo(date: todo.date, title: todo.title);
+    final res = await todoApi.addTodo(date: ref.watch(todoDatetimeStateProvider).toString(), title: ref.watch(todoTextEditingStateProvider).text);
     Todo newTodo = res.response;
     newTodo = newTodo.copyWith(date: newTodo.date.substring(0, 10));
 

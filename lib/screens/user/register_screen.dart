@@ -171,6 +171,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                 ).p(10),
+                const SizedBox().pb(10),
                 Row(children: [
                   ElevatedButton(
                           onPressed: () async {
@@ -188,7 +189,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   globalSharedPrefs.setString('api_key', value.token ?? '');
                                   await ApiClient.setHeader();
                                   ref.read(loginStateNotifierProvider.notifier).loggedin();
-                                  ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(datetimeStateProvider).toString());
+                                  ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
                                   if (!mounted) return;
                                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                   messageSnackbar(context, ref.watch(apiMessageStateProvider));
