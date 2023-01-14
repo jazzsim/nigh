@@ -11,6 +11,7 @@ import '../../appsetting.dart';
 import '../../components/loading_dialog.dart';
 import '../../helper/util.dart';
 import '../home_screen.dart';
+import 'reset_password_screen.dart';
 import 'login_controller.dart';
 import 'register_screen.dart';
 
@@ -92,7 +93,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ).p(10),
                 Align(
                   alignment: Alignment.centerRight,
-                  child: Text('Forgot password?', style: ref.watch(textThemeProvider(context)).caption).pr(15),
+                  child: SizedBox(
+                    height: 30,
+                    child: TextButton(
+                        onPressed: () => Navigator.of(context).push(ForgotPasswordScreen.route()),
+                        child: Text('Forgot password?', style: ref.watch(textThemeProvider(context)).caption?.copyWith(color: themePrimary))),
+                  ),
                 ),
                 Row(children: [
                   ElevatedButton(

@@ -30,6 +30,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final usernameTextEditingController = TextEditingController();
   final passwordTextEditingController = TextEditingController();
   final confirmPasswordTextEditingController = TextEditingController();
+  final emailTextEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool _invalid = false;
 
@@ -83,6 +84,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       border: OutlineInputBorder(),
                       label: Text('Last Name')),
                 ).p(10),
+                const Divider(
+                  color: textSecondary,
+                ),
                 TextFormField(
                   style: const TextStyle(color: textPrimary),
                   autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -170,6 +174,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       },
                     ),
                   ),
+                ).p(10),
+                const Divider(color: textSecondary),
+                Text(
+                  'Your email will only be used for password reset purposes.',
+                  style: ref.watch(textThemeProvider(context)).caption?.copyWith(color: textSecondary),
+                  textAlign: TextAlign.center,
+                ).p(5),
+                TextFormField(
+                  style: const TextStyle(color: textPrimary),
+                  controller: emailTextEditingController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                      labelStyle: TextStyle(color: textSecondary),
+                      floatingLabelStyle: TextStyle(color: themePrimary),
+                      enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
+                      border: OutlineInputBorder(),
+                      label: Text('Email (optional)')),
                 ).p(10),
                 const SizedBox().pb(10),
                 Row(children: [

@@ -30,5 +30,23 @@ abstract class UserApi {
     @Field('last_name') required String lastName,
     @Field() required String password
   });
+
+  @POST('request_reset_password')
+  Future<ApiResponse<User?>> requestResetPassword({
+    @Field() required String username,
+    @Field() required String email
+  });
+
+  @POST('verify_reset_password')
+  Future<ApiResponse<User?>> verifyResetPassword({
+    @Field() required String username,
+    @Field() required String code
+  });
+
+  @POST('reset_password')
+  Future<ApiResponse<User?>> resetPassword({
+    @Field() required String username,
+    @Field() required String password
+  });
 }
 

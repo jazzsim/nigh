@@ -14,11 +14,11 @@ class LoadingScreen {
     // show the loading dialog
     showDialog(
         // The user CANNOT close this dialog  by pressing outsite it
-        barrierDismissible: true,
+        barrierDismissible: false,
         context: context,
         builder: (_) {
           return WillPopScope(
-            onWillPop: () async => true,
+            onWillPop: () async => false,
             child: Padding(
               padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.2),
               child: Consumer(
