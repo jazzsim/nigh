@@ -236,10 +236,7 @@ class ResetPasswordCodeScreenState extends ConsumerState<ResetPasswordCodeScreen
                                 }
                                 if (formKey.currentState!.validate()) {
                                   LoadingScreen(context).show();
-                                  ref
-                                      .watch(passwordResetStateNotifierProvider.notifier)
-                                      .verifyResetPassword(ref.watch(usernameStateProvider), codeTextEditingController.text)
-                                      .then((value) {
+                                  ref.watch(passwordResetStateNotifierProvider.notifier).verifyResetPassword(codeTextEditingController.text).then((value) {
                                     LoadingScreen(context).hide();
                                     ref.watch(passwordResetStateNotifierProvider.notifier).verified();
                                     messageSnackbar(context, ref.watch(apiMessageStateProvider));
@@ -401,10 +398,7 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
                                 }
                                 if (formKey.currentState!.validate()) {
                                   LoadingScreen(context).show();
-                                  ref
-                                      .watch(passwordResetStateNotifierProvider.notifier)
-                                      .verifyResetPassword(ref.watch(usernameStateProvider), passwordTextEditingController.text)
-                                      .then((value) {
+                                  ref.watch(passwordResetStateNotifierProvider.notifier).resetPassword(passwordTextEditingController.text).then((value) {
                                     LoadingScreen(context).hide();
                                     messageSnackbar(context, ref.watch(apiMessageStateProvider));
                                     Navigator.of(context).pop();

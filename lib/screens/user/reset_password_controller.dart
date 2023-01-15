@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/appsetting.dart';
+import 'package:nigh/screens/user/user_controller.dart';
 
 import '../../api/user_api.dart';
 
@@ -21,17 +22,18 @@ class PasswordResetStateNotifier extends StateNotifier<PasswordResetState> {
     final userApi = UserApi();
     final res = await userApi.requestResetPassword(username: username, email: email);
     ref.watch(apiMessageStateProvider.notifier).state = res.message;
+    if (res.response != null) ref.watch(userNotifierProvider.notifier).state = res.response!;
   }
 
-  Future<void> verifyResetPassword(String username, String code) async {
+  Future<void> verifyResetPassword(String code) async {
     final userApi = UserApi();
-    final res = await userApi.verifyResetPassword(username: username, code: code);
+    final res = await userApi.verifyResetPassword(userId: ref.watch(userNotifierProvider).id?.toInt() ?? 0 , code: code);
     ref.watch(apiMessageStateProvider.notifier).state = res.message;
   }
 
-  Future<void> resetPassword(String username, String password) async {
+  Future<void> resetPassword(String password) async {
     final userApi = UserApi();
-    final res = await userApi.resetPassword(username: username, password: password);
+    final res = await userApi.resetPassword(userId: ref.watch(userNotifierProvider).id?.toInt() ?? 0, password: password);
     ref.watch(apiMessageStateProvider.notifier).state = res.message;
   }
 

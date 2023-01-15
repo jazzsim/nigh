@@ -122,19 +122,19 @@ class _UserApi implements UserApi {
   }
 
   @override
-  Future<ApiResponse<User?>> verifyResetPassword({
-    required username,
+  Future<ApiResponse<bool>> verifyResetPassword({
+    required userId,
     required code,
   }) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = {
-      'username': username,
+      'user_id': userId,
       'code': code,
     };
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<User>>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<bool>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -146,28 +146,27 @@ class _UserApi implements UserApi {
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ApiResponse<User?>.fromJson(
+    final value = ApiResponse<bool>.fromJson(
       _result.data!,
-      (json) =>
-          json == null ? null : User.fromJson(json as Map<String, dynamic>),
+      (json) => json as bool,
     );
     return value;
   }
 
   @override
-  Future<ApiResponse<User?>> resetPassword({
-    required username,
+  Future<ApiResponse<bool>> resetPassword({
+    required userId,
     required password,
   }) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = {
-      'username': username,
+      'user_id': userId,
       'password': password,
     };
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<User>>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<bool>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -179,10 +178,9 @@ class _UserApi implements UserApi {
               data: _data,
             )
             .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ApiResponse<User?>.fromJson(
+    final value = ApiResponse<bool>.fromJson(
       _result.data!,
-      (json) =>
-          json == null ? null : User.fromJson(json as Map<String, dynamic>),
+      (json) => json as bool,
     );
     return value;
   }

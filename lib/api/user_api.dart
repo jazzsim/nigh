@@ -38,14 +38,14 @@ abstract class UserApi {
   });
 
   @POST('verify_reset_password')
-  Future<ApiResponse<User?>> verifyResetPassword({
-    @Field() required String username,
+  Future<ApiResponse<bool>> verifyResetPassword({
+    @Field("user_id") required int userId,
     @Field() required String code
   });
 
   @POST('reset_password')
-  Future<ApiResponse<User?>> resetPassword({
-    @Field() required String username,
+  Future<ApiResponse<bool>> resetPassword({
+    @Field("user_id") required int userId,
     @Field() required String password
   });
 }
