@@ -15,15 +15,15 @@ abstract class UserApi {
   }
 
   static final dio = ApiClient().dio;
-  static final _instance = _UserApi(dio, baseUrl: '$kApiUrl/user/');
+  static final _instance = _UserApi(dio, baseUrl: '$kApiUrl/user');
 
-  @POST('login')
+  @POST('/login')
   Future<ApiResponse<User>> login({
     @Field() required String? username,
     @Field() required String? password
   });
 
-  @POST('register')
+  @POST('/register')
   Future<ApiResponse<User>> register({
     @Field() required String username,
     @Field('first_name') required String firstName,
@@ -31,19 +31,19 @@ abstract class UserApi {
     @Field() required String password
   });
 
-  @POST('request_reset_password')
+  @POST('/request_reset_password')
   Future<ApiResponse<User?>> requestResetPassword({
     @Field() required String username,
     @Field() required String email
   });
 
-  @POST('verify_reset_password')
+  @POST('/verify_reset_password')
   Future<ApiResponse<bool>> verifyResetPassword({
     @Field("user_id") required int userId,
     @Field() required String code
   });
 
-  @POST('reset_password')
+  @POST('/reset_password')
   Future<ApiResponse<bool>> resetPassword({
     @Field("user_id") required int userId,
     @Field() required String password

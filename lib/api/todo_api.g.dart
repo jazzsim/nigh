@@ -32,7 +32,7 @@ class _TodoApi implements TodoApi {
     )
             .compose(
               _dio.options,
-              '',
+              '/',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -91,7 +91,7 @@ class _TodoApi implements TodoApi {
     )
         .compose(
           _dio.options,
-          'complete',
+          '/complete',
           queryParameters: queryParameters,
           data: _data,
         )

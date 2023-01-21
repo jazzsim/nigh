@@ -32,7 +32,7 @@ class _DiaryApi implements DiaryApi {
     )
             .compose(
               _dio.options,
-              '',
+              '/',
               queryParameters: queryParameters,
               data: _data,
             )

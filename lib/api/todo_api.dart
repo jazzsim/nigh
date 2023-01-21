@@ -15,9 +15,9 @@ abstract class TodoApi {
   }
 
   static final dio = ApiClient().dio;
-  static final _instance = _TodoApi(dio, baseUrl: '$kApiUrl/todos/');
+  static final _instance = _TodoApi(dio, baseUrl: '$kApiUrl/todos');
 
-  @GET('')
+  @GET('/')
   Future<ApiResponse<List<Todo>>> getTodos({@Query("date") required String date});
 
   @POST('')
@@ -26,7 +26,7 @@ abstract class TodoApi {
     @Field() required String title,
   });
 
-  @PUT('complete')
+  @PUT('/complete')
   Future<void> complete({@Query('id') required int id});
 
   @PUT('/{id}')

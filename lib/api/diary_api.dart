@@ -15,9 +15,9 @@ abstract class DiaryApi {
   }
 
   static final dio = ApiClient().dio;
-  static final _instance = _DiaryApi(dio, baseUrl: '$kApiUrl/diaries/');
+  static final _instance = _DiaryApi(dio, baseUrl: '$kApiUrl/diaries');
 
-  @GET('')
+  @GET('/')
   Future<ApiResponse<List<Diary>>> getDiarys({@Query("date") required String date});
 
   @POST('')

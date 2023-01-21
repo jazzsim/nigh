@@ -40,7 +40,7 @@ class _UserApi implements UserApi {
     )
             .compose(
               _dio.options,
-              'login',
+              '/login',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -76,7 +76,7 @@ class _UserApi implements UserApi {
     )
             .compose(
               _dio.options,
-              'register',
+              '/register',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -108,7 +108,7 @@ class _UserApi implements UserApi {
     )
             .compose(
               _dio.options,
-              'request_reset_password',
+              '/request_reset_password',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -141,7 +141,7 @@ class _UserApi implements UserApi {
     )
             .compose(
               _dio.options,
-              'verify_reset_password',
+              '/verify_reset_password',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -173,7 +173,7 @@ class _UserApi implements UserApi {
     )
             .compose(
               _dio.options,
-              'reset_password',
+              '/reset_password',
               queryParameters: queryParameters,
               data: _data,
             )
