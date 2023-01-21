@@ -23,7 +23,7 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
     String cleanDate = date.substring(0, 10);
 
     if (state.isNotEmpty) {
-      bool exist = state.containsKey(cleanDate.substring(0, 10));
+      bool exist = state.containsKey(cleanDate);
       if (exist) return;
     }
 
@@ -46,41 +46,46 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
     Todo newTodo = res.response;
     newTodo = newTodo.copyWith(date: newTodo.date.substring(0, 10));
 
-    Map<String, List<Todo>> test = {};
-    List<Todo> todoList = [];
+    Map<String, List<Todo>> newTodoState = {};
 
     for (var element in state.entries) {
       if (ref.read(dateStateProvider.notifier).state == element.key) {
+        List<Todo> todoList = [];
         for (var todo in element.value) {
           todoList.add(todo);
         }
         if (newTodo.date == element.key) todoList.add(newTodo);
-        test.addAll({element.key: todoList});
+        newTodoState.addAll({element.key: todoList});
       }
     }
-    state = {...test};
+    state = {...newTodoState};
   }
 
   Future<void> complete(int todoId) async {
     final todoApi = TodoApi();
-    await todoApi.complete(id: todoId);
+    todoApi.complete(id: todoId);
 
-    Map<String, List<Todo>> test = {};
-    List<Todo> todoList = [];
+    Map<String, List<Todo>> newTodoState = {};
 
     for (var element in state.entries) {
       if (ref.read(dateStateProvider.notifier).state == element.key) {
+        List<Todo> todoList = [];
         for (var todo in element.value) {
           if (todo.id == todoId) {
             todo = todo.copyWith(completed: !todo.completed);
           }
           todoList.add(todo);
         }
-        test.addAll({element.key: todoList});
+        newTodoState.addAll({element.key: todoList});
+      } else {
+        List<Todo> copyOfTodoList = [];
+        for (var todo in element.value) {
+          copyOfTodoList.add(todo);
+        }
+        newTodoState.addAll({element.key: copyOfTodoList});
       }
     }
-
-    state = {...test};
+    state = {...newTodoState};
   }
 
   Future<void> edit(int todoId, String title) async {
