@@ -10,7 +10,7 @@ import '../../api_client.dart';
 import '../../appsetting.dart';
 import '../../components/loading_dialog.dart';
 import '../../helper/util.dart';
-import '../home_screen.dart';
+import '../diary/diary_controller.dart';
 import 'reset_password_screen.dart';
 import 'login_controller.dart';
 import 'register_screen.dart';
@@ -113,6 +113,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                 ref.invalidate(todoNotifierProvider);
                                 ref.invalidate(todoDatetimeStateProvider);
                                 await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
+                                await ref.watch(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
                                 if (!mounted) return;
                                 ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                 messageSnackbar(context, ref.watch(apiMessageStateProvider));

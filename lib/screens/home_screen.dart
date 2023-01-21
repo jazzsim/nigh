@@ -14,6 +14,7 @@ import '../api_client.dart';
 import '../components/logo.dart';
 import '../components/snackbar.dart';
 import '../constant.dart';
+import 'diary/diary_controller.dart';
 import 'diary/edit_diary_screen.dart';
 import 'diary/diary_screen.dart';
 import 'todo/to_do_controller.dart';
@@ -216,6 +217,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         ref.invalidate(screenStateProvider);
                                         ref.invalidate(todoNotifierProvider);
                                         await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
+                                        ref.invalidate(diaryNotifierProvider);
+                                        await ref.watch(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
                                         if (!mounted) return;
                                         messageSnackbar(context, 'Logged out');
                                         Navigator.of(context).pop();

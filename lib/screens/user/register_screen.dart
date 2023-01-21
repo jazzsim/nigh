@@ -10,10 +10,10 @@ import '../../components/loading_dialog.dart';
 import '../../components/logo.dart';
 import '../../constant.dart';
 import '../../helper/util.dart';
+import '../diary/diary_controller.dart';
 import '../home_screen.dart';
 import '../todo/to_do_controller.dart';
 import 'login_controller.dart';
-import 'user_controller.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -211,6 +211,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                   await ApiClient.setHeader();
                                   ref.read(loginStateNotifierProvider.notifier).loggedin();
                                   ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
+                                  ref.watch(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
                                   if (!mounted) return;
                                   ScaffoldMessenger.of(context).hideCurrentSnackBar();
                                   messageSnackbar(context, ref.watch(apiMessageStateProvider));
