@@ -9,6 +9,7 @@ import 'package:weekly_date_picker/weekly_date_picker.dart';
 import '../../animation/expansion_animation.dart';
 import '../../animation/rotate_animation.dart';
 import '../../api/model/todo.dart';
+import '../../components/loading_dialog.dart';
 import '../../components/snackbar.dart';
 import '../../constant.dart';
 
@@ -168,7 +169,6 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
                 : const Center(
                     child: CircularProgressIndicator(),
                   ).exp(),
-            const Expanded(child: SizedBox()),
           ],
         ),
       ),
@@ -190,6 +190,7 @@ class CheckboxLT extends ConsumerStatefulWidget {
 }
 
 class _CheckboxLTState extends ConsumerState<CheckboxLT> {
+  final editTextEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -207,49 +208,55 @@ class _CheckboxLTState extends ConsumerState<CheckboxLT> {
                   : () {
                       showDialog(
                           context: context,
-                          builder: (BuildContext context) {
-                            ref.watch(todoTextEditingStateProvider).text = widget.todo.title;
-                            return Dialog(
-                              backgroundColor: backgroundPrimary,
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text.rich(
-                                    TextSpan(
-                                      text: 'Edit ',
-                                      children: <InlineSpan>[
-                                        TextSpan(
-                                          text: widget.todo.title,
-                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(color: themePrimary),
-                                        )
-                                      ],
-                                      style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
+                          builder: (BuildContext c) {
+                            editTextEditingController.text = widget.todo.title;
+                            return ProviderScope(
+                              parent: ProviderScope.containerOf(context),
+                              child: Dialog(
+                                backgroundColor: backgroundPrimary,
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text.rich(
+                                      TextSpan(
+                                        text: 'Edit ',
+                                        children: <InlineSpan>[
+                                          TextSpan(
+                                            text: widget.todo.title,
+                                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: themePrimary),
+                                          )
+                                        ],
+                                        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
+                                      ),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ).p(15),
+                                    TextFormField(
+                                      autofocus: true,
+                                      textCapitalization: TextCapitalization.sentences,
+                                      controller: editTextEditingController,
+                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
+                                      minLines: 1,
+                                      maxLines: 1,
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ).p(15),
-                                  TextFormField(
-                                    autofocus: true,
-                                    textCapitalization: TextCapitalization.sentences,
-                                    controller: ref.watch(todoTextEditingStateProvider),
-                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
-                                    minLines: 1,
-                                    maxLines: 1,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {
-                                            if (ref.watch(todoTextEditingStateProvider).text.isEmpty) return;
-                                            ref.watch(todoNotifierProvider.notifier).edit(widget.todo.id, ref.watch(todoTextEditingStateProvider).text);
-                                            Navigator.of(context).pop();
-                                          },
-                                          child: const Text('Edit'))
-                                    ],
-                                  ).pt(10)
-                                ],
-                              ).p(10),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        TextButton(
+                                            onPressed: () async {
+                                              if (editTextEditingController.text.isEmpty) return;
+                                              LoadingScreen(context).show();
+                                              await ref.watch(todoNotifierProvider.notifier).edit(widget.todo.id, editTextEditingController.text);
+                                              if (!mounted) return;
+                                              LoadingScreen(context).hide();
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: const Text('Edit'))
+                                      ],
+                                    ).pt(10)
+                                  ],
+                                ).p(10),
+                              ),
                             );
                           });
                     },

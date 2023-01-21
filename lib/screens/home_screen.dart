@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/apptheme.dart';
+import 'package:nigh/components/loading_dialog.dart';
 import 'package:nigh/screens/todo/to_do_screen.dart';
 import 'package:nigh/screens/user/login_controller.dart';
 import 'package:nigh/screens/user/login_screen.dart';
@@ -57,38 +58,45 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ref.watch(todoTextEditingStateProvider).text = '';
                                   showDialog(
                                       context: context,
-                                      builder: (BuildContext context) {
-                                        return Dialog(
-                                          backgroundColor: backgroundPrimary,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Text(
-                                                'Add New To do',
-                                                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
-                                              ).p(15),
-                                              TextFormField(
-                                                autofocus: true,
-                                                textCapitalization: TextCapitalization.sentences,
-                                                controller: ref.watch(todoTextEditingStateProvider),
-                                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
-                                                minLines: 1,
-                                                maxLines: 1,
-                                              ).pLTRB(20, 0, 20, 0),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                  TextButton(
-                                                      onPressed: () {
-                                                        if (ref.watch(todoTextEditingStateProvider).text.isEmpty) return;
-                                                        ref.watch(todoNotifierProvider.notifier).add();
-                                                        Navigator.of(context).pop();
-                                                      },
-                                                      child: const Text('Add'))
-                                                ],
-                                              ).pt(10)
-                                            ],
-                                          ).p(10),
+                                      builder: (BuildContext c) {
+                                        return ProviderScope(
+                                          parent: ProviderScope.containerOf(context),
+                                          child: Dialog(
+                                            backgroundColor: backgroundPrimary,
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  'Add New To do',
+                                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
+                                                ).p(15),
+                                                TextFormField(
+                                                  autofocus: true,
+                                                  textCapitalization: TextCapitalization.sentences,
+                                                  controller: ref.watch(todoTextEditingStateProvider),
+                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
+                                                  minLines: 1,
+                                                  maxLines: 1,
+                                                ).pLTRB(20, 0, 20, 0),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.end,
+                                                  children: [
+                                                    TextButton(
+                                                        onPressed: () async {
+                                                          if (ref.watch(todoTextEditingStateProvider).text.isEmpty) return;
+                                                          // add Todo
+                                                          LoadingScreen(context).show();
+                                                          await ref.watch(todoNotifierProvider.notifier).add();
+                                                          if (!mounted) return;
+                                                          LoadingScreen(context).hide();
+                                                          Navigator.of(context).pop();
+                                                        },
+                                                        child: const Text('Add'))
+                                                  ],
+                                                ).pt(10)
+                                              ],
+                                            ).p(10),
+                                          ),
                                         );
                                       });
                                 },
