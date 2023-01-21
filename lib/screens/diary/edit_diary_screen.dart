@@ -55,112 +55,122 @@ class _EditDiaryScreenState extends ConsumerState<EditDiaryScreen> {
         }
         return pop;
       },
-      child: Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            title: GestureDetector(
-                onTap: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return Dialog(
-                          backgroundColor: backgroundPrimary,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                'Title',
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
-                              ).p(15),
-                              TextFormField(
-                                autofocus: true,
-                                textCapitalization: TextCapitalization.sentences,
-                                controller: ref.watch(titleTextEditingProvider),
-                                style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
-                                minLines: 1,
-                                maxLines: 1,
-                              ).pLTRB(20, 0, 20, 0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                      onPressed: () {
-                                        if (ref.watch(titleTextEditingProvider).text.isEmpty) return;
-                                        _changed = true;
-                                        setState(() {});
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text('Change'))
-                                ],
-                              ).pt(10)
-                            ],
-                          ).p(10),
-                        );
-                      });
-                },
-                child: Text(
-                  ref.watch(titleTextEditingProvider).text.isEmpty ? 'Title' : ref.watch(titleTextEditingProvider).text,
-                  style: TextStyle(color: ref.watch(titleTextEditingProvider).text.isEmpty ? textSecondary : null),
-                )),
-            actions: [
-              TextButton(
-                  onPressed: ref.watch(contentTextEditingProvider).text.isNotEmpty
-                      ? _save
-                          ? () async {
-                              LoadingScreen(context).show();
-                              // when title is null, set default
-                              if (ref.watch(titleTextEditingProvider).text.isEmpty) {
-                                ref.watch(titleTextEditingProvider).text = DateFormat.yMMMEd().format(ref.watch(diaryDatetimeStateProvider));
-                              }
-                              widget.diary == null ? await ref.watch(diaryNotifierProvider.notifier).add() : await ref.watch(diaryNotifierProvider.notifier).edit();
-                              if (!mounted) return;
-                              LoadingScreen(context).hide();
-                              messageSnackbar(context, 'Saved Diary');
-                              ref.invalidate(diaryNotifierProvider);
-                              await ref.watch(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
-                              if (!mounted) return;
-                              _changed = false;
-                              Navigator.of(context).pop();
-                            }
-                          : () async {
-                              _save = true;
-                              FocusScopeNode currentFocus = FocusScope.of(context);
+      child: GestureDetector(
+        onTap: () {
+          FocusScopeNode currentFocus = FocusScope.of(context);
 
-                              if (!currentFocus.hasPrimaryFocus) {
-                                currentFocus.unfocus();
-                              }
-                            }
-                      : null,
-                  style: TextButton.styleFrom(
-                    splashFactory: NoSplash.splashFactory,
-                  ),
-                  child: Text(ref.watch(titleTextEditingProvider).text.isNotEmpty || ref.watch(contentTextEditingProvider).text.isNotEmpty
-                      ? _save
-                          ? 'Save'
-                          : 'Done'
-                      : ''))
-            ],
-          ),
-          body: Column(
-            children: [
-              Scrollbar(
-                controller: _scrollController,
-                child: TextFormField(
-                  onTap: () => _save = false,
-                  scrollController: _scrollController,
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  controller: ref.watch(contentTextEditingProvider),
-                  style: const TextStyle(color: textPrimary),
-                  onChanged: (value) {
-                    _changed = true;
+          if (!currentFocus.hasPrimaryFocus) {
+            currentFocus.unfocus();
+          }
+          if (ref.watch(contentTextEditingProvider).text.isNotEmpty) _save = true;
+        },
+        child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            appBar: AppBar(
+              title: GestureDetector(
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Dialog(
+                            backgroundColor: backgroundPrimary,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Title',
+                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
+                                ).p(15),
+                                TextFormField(
+                                  autofocus: true,
+                                  textCapitalization: TextCapitalization.sentences,
+                                  controller: ref.watch(titleTextEditingProvider),
+                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
+                                  minLines: 1,
+                                  maxLines: 1,
+                                ).pLTRB(20, 0, 20, 0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {
+                                          if (ref.watch(titleTextEditingProvider).text.isEmpty) return;
+                                          _changed = true;
+                                          setState(() {});
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('Change'))
+                                  ],
+                                ).pt(10)
+                              ],
+                            ).p(10),
+                          );
+                        });
                   },
-                  keyboardType: TextInputType.multiline,
-                  decoration: const InputDecoration(border: InputBorder.none, hintText: 'Write something...', hintStyle: TextStyle(color: textSecondary)),
-                  maxLines: null,
-                ).p(10),
-              ).exp(),
-            ],
-          )),
+                  child: Text(
+                    ref.watch(titleTextEditingProvider).text.isEmpty ? 'Title' : ref.watch(titleTextEditingProvider).text,
+                    style: TextStyle(color: ref.watch(titleTextEditingProvider).text.isEmpty ? textSecondary : null),
+                  )),
+              actions: [
+                TextButton(
+                    onPressed: ref.watch(contentTextEditingProvider).text.isNotEmpty
+                        ? _save
+                            ? () async {
+                                LoadingScreen(context).show();
+                                // when title is null, set default
+                                if (ref.watch(titleTextEditingProvider).text.isEmpty) {
+                                  ref.watch(titleTextEditingProvider).text = DateFormat.yMMMEd().format(ref.watch(diaryDatetimeStateProvider));
+                                }
+                                widget.diary == null ? await ref.watch(diaryNotifierProvider.notifier).add() : await ref.watch(diaryNotifierProvider.notifier).edit();
+                                if (!mounted) return;
+                                LoadingScreen(context).hide();
+                                messageSnackbar(context, 'Saved Diary');
+                                ref.invalidate(diaryNotifierProvider);
+                                await ref.watch(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
+                                if (!mounted) return;
+                                _changed = false;
+                                Navigator.of(context).pop();
+                              }
+                            : () async {
+                                _save = true;
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                              }
+                        : () => _save = true,
+                    style: TextButton.styleFrom(
+                      splashFactory: NoSplash.splashFactory,
+                    ),
+                    child: Text(ref.watch(contentTextEditingProvider).text.isNotEmpty
+                        ? _save
+                            ? 'Save'
+                            : 'Done'
+                        : ''))
+              ],
+            ),
+            body: Column(
+              children: [
+                Scrollbar(
+                  controller: _scrollController,
+                  child: TextFormField(
+                    onTap: () => _save = false,
+                    scrollController: _scrollController,
+                    scrollPhysics: const BouncingScrollPhysics(),
+                    controller: ref.watch(contentTextEditingProvider),
+                    style: const TextStyle(color: textPrimary),
+                    onChanged: (value) {
+                      _changed = true;
+                    },
+                    keyboardType: TextInputType.multiline,
+                    decoration: const InputDecoration(border: InputBorder.none, hintText: 'Write something...', hintStyle: TextStyle(color: textSecondary)),
+                    maxLines: null,
+                  ).p(10),
+                ).exp(),
+              ],
+            )),
+      ),
     );
   }
 }
