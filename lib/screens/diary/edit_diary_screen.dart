@@ -122,12 +122,11 @@ class _EditDiaryScreenState extends ConsumerState<EditDiaryScreen> {
                                   ref.watch(titleTextEditingProvider).text = DateFormat.yMMMEd().format(ref.watch(diaryDatetimeStateProvider));
                                 }
                                 widget.diary == null ? await ref.watch(diaryNotifierProvider.notifier).add() : await ref.watch(diaryNotifierProvider.notifier).edit();
-                                if (!mounted) return;
-                                LoadingScreen(context).hide();
-                                messageSnackbar(context, 'Saved Diary');
                                 ref.invalidate(diaryNotifierProvider);
                                 await ref.watch(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
                                 if (!mounted) return;
+                                LoadingScreen(context).hide();
+                                messageSnackbar(context, 'Saved Diary');
                                 _changed = false;
                                 Navigator.of(context).pop();
                               }
@@ -147,7 +146,9 @@ class _EditDiaryScreenState extends ConsumerState<EditDiaryScreen> {
                         ? _save
                             ? 'Save'
                             : 'Done'
-                        : ''))
+                        : _changed && ref.watch(contentTextEditingProvider).text.isNotEmpty
+                            ? 'Done'
+                            : ''))
               ],
             ),
             body: Column(
@@ -162,6 +163,7 @@ class _EditDiaryScreenState extends ConsumerState<EditDiaryScreen> {
                     style: const TextStyle(color: textPrimary),
                     onChanged: (value) {
                       _changed = true;
+                      setState(() {});
                     },
                     keyboardType: TextInputType.multiline,
                     decoration: const InputDecoration(border: InputBorder.none, hintText: 'Write something...', hintStyle: TextStyle(color: textSecondary)),
