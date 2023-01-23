@@ -17,6 +17,7 @@ import '../constant.dart';
 import 'diary/diary_controller.dart';
 import 'diary/edit_diary_screen.dart';
 import 'diary/diary_screen.dart';
+import 'others_screen.dart';
 import 'todo/to_do_controller.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -182,20 +183,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               'Privacy Policy',
                               style: ref.watch(textThemeProvider(context)).bodyLarge?.copyWith(color: textPrimary),
                             ),
-                            onTap: () {
-                              // Update the state of the app.
-                              // ...
-                            },
+                            onTap: () => Navigator.of(context).push(OthersScreen.route('Privacy Policy')),
                           ),
                           ListTile(
-                            title: const Text(
-                              'Terms of Use',
-                            ),
-                            onTap: () {
-                              // Update the state of the app.
-                              // ...
-                            },
-                          ),
+                              title: const Text(
+                                'Terms of Use',
+                              ),
+                              onTap: () => Navigator.of(context).push(OthersScreen.route('Terms of Use'))),
                           const SizedBox().exp(),
                           ref.watch(loginStateNotifierProvider) == LoginState.loggedin
                               ? Column(

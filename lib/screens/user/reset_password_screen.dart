@@ -70,7 +70,7 @@ class _ResetPasswordEmailScreenState extends ConsumerState<ResetPasswordEmailScr
                 children: [
                   Text(
                     'Step One',
-                    style: ref.watch(textThemeProvider(context)).headline2?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).headline1?.fontWeight),
+                    style: ref.watch(textThemeProvider(context)).headline3?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).headline1?.fontWeight),
                   ),
                   Text(
                     'Before we proceed, please enter your username and email for verification purposes.',
@@ -253,9 +253,6 @@ class ResetPasswordCodeScreenState extends ConsumerState<ResetPasswordCodeScreen
                     ]).pLTRB(10, 20, 10, 10),
                   ],
                 ),
-                // const Spacer(
-                //   flex: 4,
-                // )
               ]).p(20),
             ),
           ),
