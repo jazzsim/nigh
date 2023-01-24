@@ -48,5 +48,10 @@ abstract class UserApi {
     @Field("user_id") required int userId,
     @Field() required String password
   });
+
+  @POST('/delete_user')
+  Future<ApiResponse<bool>> deleteUser({
+    @Field() required String password
+  });
 }
 

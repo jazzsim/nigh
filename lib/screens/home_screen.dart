@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/apptheme.dart';
 import 'package:nigh/components/loading_dialog.dart';
+import 'package:nigh/screens/setting_screen.dart';
 import 'package:nigh/screens/todo/to_do_screen.dart';
 import 'package:nigh/screens/user/login_controller.dart';
 import 'package:nigh/screens/user/login_screen.dart';
@@ -137,6 +138,30 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           ]))),
                             ],
                           ),
+                          const Divider(
+                            color: textSecondary,
+                            height: 0,
+                          ),
+                          ref.watch(loginStateNotifierProvider) == LoginState.loggedin
+                              ? // Setting section
+                              Column(
+                                  children: [
+                                    ListTile(
+                                      enabled: false,
+                                      title: Text(
+                                        'Account',
+                                        style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary),
+                                      ),
+                                    ),
+                                    ListTile(
+                                      title: Text(
+                                        'Setting',
+                                      ),
+                                      onTap: () => Navigator.of(context).push(SettingScreen.route()),
+                                    )
+                                  ],
+                                )
+                              : const SizedBox(),
                           ref.watch(loginStateNotifierProvider) != LoginState.loggedin
                               ? Column(
                                   children: [
