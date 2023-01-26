@@ -58,7 +58,7 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
                   ref.invalidate(todoNotifierProvider);
                   await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
                   ref.invalidate(diaryNotifierProvider);
-                  await ref.watch(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
+                  await ref.read(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
                   if (!mounted) return;
                   LoadingScreen(context).hide();
                   Navigator.of(context).pop();

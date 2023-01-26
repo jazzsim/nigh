@@ -237,7 +237,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                         ref.invalidate(todoNotifierProvider);
                                         await ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
                                         ref.invalidate(diaryNotifierProvider);
-                                        await ref.watch(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
+                                        await ref.read(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
                                         if (!mounted) return;
                                         messageSnackbar(context, 'Logged out');
                                         Navigator.of(context).pop();
@@ -367,14 +367,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                 )))
         : Scaffold(
-            body: Container(
-            color: backgroundPrimary,
-            child: Center(
+            body: Center(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [const CircularProgressIndicator().pb(20), const Text('nigh')],
-              ),
-            ),
-          ));
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Image.asset(
+                  'assets/images/logo.png',
+                  height: 200,
+                ).pb(20),
+                const Text('Loading...').pb(10),
+              ],
+          ),
+            ));
   }
 }
