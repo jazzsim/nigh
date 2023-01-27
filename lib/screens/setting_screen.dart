@@ -33,6 +33,13 @@ class _SettingScreenState extends ConsumerState<SettingScreen> {
       body: Column(
         children: [
           ListTile(
+            title: const Text('Change password', style: TextStyle(color: textPrimary)),
+            onTap: () async {
+              await PopUpDialogs(context).changePasswordDialog(context, ref);
+            },
+          ),
+          const ListTile(),
+          ListTile(
             leading: const Icon(
               Icons.warning,
               color: backgroundPrimary,
