@@ -36,6 +36,14 @@ abstract class UserApi {
   @POST('/delete_user')
   Future<ApiResponse<bool>> deleteUser({@Field() required String password});
 
+  @POST('/edit_profile')
+  Future<ApiResponse<User>> editProfile({
+    @Field() required String username,
+    @Field("first_name") required String firstName,
+    @Field("last_name") required String lastName,
+    @Field() required String email,
+    });
+
   @POST('/change_password')
   Future<ApiResponse<bool>> changePassword({
     @Field("current_password") required String currentPassword,
