@@ -49,18 +49,21 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
                 elevation: 0,
                 margin: EdgeInsets.zero,
                 color: Colors.transparent,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(DateFormat.yMMMEd().format(ref.watch(todoDatetimeStateProvider))),
-                    RotateAnimation(
-                      rotate: _weekAnimation,
-                      child: const Icon(
-                        Icons.arrow_drop_down,
-                        color: textPrimary,
-                      ),
-                    )
-                  ],
+                child: SizedBox(
+                  height: 40,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(DateFormat.yMMMEd().format(ref.watch(todoDatetimeStateProvider))),
+                      RotateAnimation(
+                        rotate: _weekAnimation,
+                        child: const Icon(
+                          Icons.arrow_drop_down,
+                          color: textPrimary,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
