@@ -57,12 +57,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Username cannot be empty';
+                        return '*Username cannot be empty';
                       }
                       return null;
                     },
                     controller: usernameTextEditingController,
                     decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
                         labelStyle: TextStyle(color: textSecondary),
                         floatingLabelStyle: TextStyle(color: themePrimary),
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
@@ -74,7 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Password cannot be empty';
+                        return '*Password cannot be empty';
                       }
                       return null;
                     },
@@ -82,6 +83,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     keyboardType: TextInputType.visiblePassword,
                     obscureText: ref.watch(hidePasswordStateProvider),
                     decoration: InputDecoration(
+                      errorStyle: const TextStyle(color: themeSecondary),
                       labelStyle: const TextStyle(color: textSecondary),
                       floatingLabelStyle: const TextStyle(color: themePrimary),
                       enabledBorder: const OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
@@ -102,7 +104,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: SizedBox(
-                      height: 30,
+                      height: 45,
                       child: TextButton(
                           onPressed: () => Navigator.of(context).push(ForgotPasswordScreen.route()),
                           child: Text('Forgot password?', style: ref.watch(textThemeProvider(context)).caption?.copyWith(color: themePrimary))),

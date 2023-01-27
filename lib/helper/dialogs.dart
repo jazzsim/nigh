@@ -109,13 +109,14 @@ class PopUpDialogs {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Password cannot be empty';
+                          return '*Password cannot be empty';
                         }
                         return null;
                       },
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: true,
                       decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
                         labelStyle: TextStyle(color: textSecondary),
                         floatingLabelStyle: TextStyle(color: themePrimary),
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),

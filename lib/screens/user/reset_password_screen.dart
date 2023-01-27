@@ -85,12 +85,13 @@ class _ResetPasswordEmailScreenState extends ConsumerState<ResetPasswordEmailScr
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Username cannot be empty';
+                        return '*Username cannot be empty';
                       }
                       return null;
                     },
                     controller: usernameTextEditingController,
                     decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
                         labelStyle: TextStyle(color: textSecondary),
                         floatingLabelStyle: TextStyle(color: themePrimary),
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
@@ -103,12 +104,13 @@ class _ResetPasswordEmailScreenState extends ConsumerState<ResetPasswordEmailScr
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Email cannot be empty';
+                        return '*Email cannot be empty';
                       }
                       return null;
                     },
                     controller: emailTextEditingController,
                     decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
                         labelStyle: TextStyle(color: textSecondary),
                         floatingLabelStyle: TextStyle(color: themePrimary),
                         enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
@@ -213,12 +215,13 @@ class ResetPasswordCodeScreenState extends ConsumerState<ResetPasswordCodeScreen
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Code cannot be empty';
+                          return '*Code cannot be empty';
                         }
                         return null;
                       },
                       controller: codeTextEditingController,
                       decoration: const InputDecoration(
+                          errorStyle: TextStyle(color: themeSecondary),
                           labelStyle: TextStyle(color: textSecondary),
                           floatingLabelStyle: TextStyle(color: themePrimary),
                           enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
@@ -321,11 +324,11 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           _invalid = true;
-                          return 'Password cannot be empty';
+                          return '*Password cannot be empty';
                         }
                         if (value.length < 8) {
                           _invalid = true;
-                          return 'Password must be at least 8 characters long';
+                          return '*Password must be at least 8 characters long';
                         }
                         return null;
                       },
@@ -333,6 +336,7 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: ref.watch(hidePasswordStateProvider),
                       decoration: InputDecoration(
+                        errorStyle: const TextStyle(color: themeSecondary),
                         border: const OutlineInputBorder(),
                         label: const Text('Password'),
                         labelStyle: const TextStyle(color: textSecondary),
@@ -356,11 +360,11 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           _invalid = true;
-                          return 'Password cannot be empty';
+                          return '*Password cannot be empty';
                         }
                         if (value != passwordTextEditingController.text) {
                           _invalid = true;
-                          return 'Password must be matching';
+                          return '*Password must be matching';
                         }
                         return null;
                       },
@@ -368,6 +372,7 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
                       keyboardType: TextInputType.visiblePassword,
                       obscureText: ref.watch(hidePasswordStateProvider),
                       decoration: InputDecoration(
+                        errorStyle: const TextStyle(color: themeSecondary),
                         border: const OutlineInputBorder(),
                         label: const Text('Confirm Password'),
                         labelStyle: const TextStyle(color: textSecondary),
