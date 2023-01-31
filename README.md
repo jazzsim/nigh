@@ -9,11 +9,15 @@
 <p align="center">
     <img src="https://img.shields.io/github/last-commit/jazzsim/nigh"/>
 </p>
-<a href="https://play.google.com/store/apps/details?id=com.qubitlink.nigh">
-  <p align="center">
-    <img style="width:200px;" src="https://user-images.githubusercontent.com/24294128/215471447-57303779-2b51-4143-963e-c2c1830505ac.svg"/>
-  </p>
-</a>
+
+<p align="center" width="100%">
+  <a href="https://play.google.com/store/apps/details?id=com.qubitlink.nigh">
+    <img width="22%" src="https://user-images.githubusercontent.com/24294128/215818913-582baa37-acaf-41d9-abed-6d01be61f2ce.png"/>
+  </a>
+  <a href="https://apps.apple.com/us/app/nigh/id1668527380">
+    <img width="22%" src="https://user-images.githubusercontent.com/24294128/215818907-99bc1ad0-94d8-43a2-b519-e583f356c55e.png"/>
+  </a>
+</p>
 
 <p align="center">
   <img width="350" alt="Screenshot 2023-01-30 at 8 50 25 PM" src="https://user-images.githubusercontent.com/24294128/215481770-4ab89b37-d6fa-4b27-94b2-8f1de1566878.png">
