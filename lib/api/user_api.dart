@@ -18,40 +18,35 @@ abstract class UserApi {
   static final _instance = _UserApi(dio, baseUrl: '$kApiUrl/user');
 
   @POST('/login')
-  Future<ApiResponse<User>> login({
-    @Field() required String? username,
-    @Field() required String? password
-  });
+  Future<ApiResponse<User>> login({@Field() required String? username, @Field() required String? password});
 
   @POST('/register')
-  Future<ApiResponse<User>> register({
-    @Field() required String username,
-    @Field('first_name') required String firstName,
-    @Field('last_name') required String lastName,
-    @Field() required String password
-  });
+  Future<ApiResponse<User>> register(
+      {@Field() required String username, @Field('first_name') required String firstName, @Field('last_name') required String lastName, @Field() required String password});
 
   @POST('/request_reset_password')
-  Future<ApiResponse<User?>> requestResetPassword({
-    @Field() required String username,
-    @Field() required String email
-  });
+  Future<ApiResponse<User?>> requestResetPassword({@Field() required String username, @Field() required String email});
 
   @POST('/verify_reset_password')
-  Future<ApiResponse<bool>> verifyResetPassword({
-    @Field("user_id") required int userId,
-    @Field() required String code
-  });
+  Future<ApiResponse<bool>> verifyResetPassword({@Field("user_id") required int userId, @Field() required String code});
 
   @POST('/reset_password')
-  Future<ApiResponse<bool>> resetPassword({
-    @Field("user_id") required int userId,
-    @Field() required String password
-  });
+  Future<ApiResponse<bool>> resetPassword({@Field("user_id") required int userId, @Field() required String password});
 
   @POST('/delete_user')
-  Future<ApiResponse<bool>> deleteUser({
-    @Field() required String password
-  });
-}
+  Future<ApiResponse<bool>> deleteUser({@Field() required String password});
 
+  @POST('/edit_profile')
+  Future<ApiResponse<User>> editProfile({
+    @Field() required String username,
+    @Field("first_name") required String firstName,
+    @Field("last_name") required String lastName,
+    @Field() required String email,
+    });
+
+  @POST('/change_password')
+  Future<ApiResponse<bool>> changePassword({
+    @Field("current_password") required String currentPassword,
+    @Field("new_password") required String newPassword
+    });
+}

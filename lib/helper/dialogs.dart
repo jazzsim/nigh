@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/apptheme.dart';
 import 'package:nigh/constant.dart';
+
+import '../appsetting.dart';
+import '../components/loading_dialog.dart';
+import '../components/snackbar.dart';
+import '../screens/user/user_controller.dart';
+import 'util.dart';
 
 class PopUpDialogs {
   final BuildContext context;
@@ -163,6 +170,287 @@ class PopUpDialogs {
           );
         });
     return value;
+  }
+
+  Future<void> changePasswordDialog(BuildContext mainContext, WidgetRef ref) async {
+    final formKey = GlobalKey<FormState>();
+    final currentPasswordTextEditingController = TextEditingController();
+    final passwordTextEditingController = TextEditingController();
+    final confirmPasswordTextEditingController = TextEditingController();
+
+    await showDialog(
+        // The user CANNOT close this dialog  by pressing outsite it
+        barrierDismissible: true,
+        // barrierColor: Color.fromARGB(70, 105, 104, 104),
+        barrierColor: const Color.fromARGB(149, 46, 56, 64),
+        context: context,
+        builder: (_) {
+          return Dialog(
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18.0))),
+            // The background color
+            backgroundColor: backgroundPrimary,
+            child: GestureDetector(
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
+              child: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    SizedBox(
+                      child: Text(
+                        'Change Password',
+                        style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary),
+                      ).pb(10),
+                    ),
+                    TextFormField(
+                      style: const TextStyle(color: textPrimary),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return '*Current password cannot be empty';
+                        return null;
+                      },
+                      controller: currentPasswordTextEditingController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        errorMaxLines: 2,
+                        errorStyle: TextStyle(color: themeSecondary),
+                        border: OutlineInputBorder(),
+                        label: Text('Current Password'),
+                        labelStyle: TextStyle(color: textSecondary),
+                        floatingLabelStyle: TextStyle(color: themePrimary),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
+                      ),
+                    ).p(10),
+                    TextFormField(
+                      style: const TextStyle(color: textPrimary),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return '*New password cannot be empty';
+                        if (value.length < 8) return '*New password must be at least 8 characters long';
+                        return null;
+                      },
+                      controller: passwordTextEditingController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        errorMaxLines: 2,
+                        errorStyle: TextStyle(color: themeSecondary),
+                        border: OutlineInputBorder(),
+                        label: Text('New Password'),
+                        labelStyle: TextStyle(color: textSecondary),
+                        floatingLabelStyle: TextStyle(color: themePrimary),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
+                      ),
+                    ).p(10),
+                    TextFormField(
+                      style: const TextStyle(color: textPrimary),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return '*Password cannot be empty';
+                        if (value != passwordTextEditingController.text) return '*Password must be matching';
+                        return null;
+                      },
+                      controller: confirmPasswordTextEditingController,
+                      keyboardType: TextInputType.visiblePassword,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
+                        border: OutlineInputBorder(),
+                        label: Text('Confirm Password'),
+                        labelStyle: TextStyle(color: textSecondary),
+                        floatingLabelStyle: TextStyle(color: themePrimary),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
+                      ),
+                    ).p(10),
+                    Row(children: [
+                      ElevatedButton(
+                              onPressed: () async {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                                if (formKey.currentState!.validate()) {
+                                  LoadingScreen(mainContext).show();
+                                  ref
+                                      .watch(userNotifierProvider.notifier)
+                                      .changePassword(currentPasswordTextEditingController.text, passwordTextEditingController.text)
+                                      .then((value) {
+                                    LoadingScreen(mainContext).hide();
+                                    messageSnackbar(mainContext, ref.watch(apiMessageStateProvider));
+                                    Navigator.of(context).pop();
+                                  }).catchError((err, st) {
+                                    LoadingScreen(mainContext).hide();
+                                    messageSnackbar(mainContext, Util.apiError(err));
+                                    Navigator.of(context).pop();
+                                  });
+                                }
+                              },
+                              child: const Text(
+                                'Reset Password',
+                              ).p(15))
+                          .exp()
+                    ]).pLTRB(10, 20, 10, 10),
+                    // const Spacer(
+                    //   flex: 4,
+                    // )
+                  ]).p(20),
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+  Future<void> editProfileDialog(BuildContext mainContext, WidgetRef ref) async {
+    final formKey = GlobalKey<FormState>();
+    final usernameTextEditingController = TextEditingController();
+    final firstNameTextEditingController = TextEditingController();
+    final lastNameTextEditingController = TextEditingController();
+    final emailTextEditingController = TextEditingController();
+
+    usernameTextEditingController.text = ref.watch(userNotifierProvider).username ?? '';
+    firstNameTextEditingController.text = ref.watch(userNotifierProvider).firstName ?? '';
+    lastNameTextEditingController.text = ref.watch(userNotifierProvider).lastName ?? '';
+    emailTextEditingController.text = ref.watch(userNotifierProvider).email ?? '';
+
+    await showDialog(
+        // The user CANNOT close this dialog  by pressing outsite it
+        barrierDismissible: true,
+        // barrierColor: Color.fromARGB(70, 105, 104, 104),
+        barrierColor: const Color.fromARGB(149, 46, 56, 64),
+        context: context,
+        builder: (_) {
+          return Dialog(
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(18.0))),
+            // The background color
+            backgroundColor: backgroundPrimary,
+            child: GestureDetector(
+              onTap: () {
+                FocusScopeNode currentFocus = FocusScope.of(context);
+
+                if (!currentFocus.hasPrimaryFocus) {
+                  currentFocus.unfocus();
+                }
+              },
+              child: Form(
+                key: formKey,
+                child: SingleChildScrollView(
+                  child: Column(mainAxisSize: MainAxisSize.min, mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                    SizedBox(
+                      child: Text(
+                        'Edit Profile',
+                        style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary),
+                      ).pb(10),
+                    ),
+                    TextFormField(
+                      style: const TextStyle(color: textPrimary),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return '*Username cannot be empty';
+                        return null;
+                      },
+                      controller: usernameTextEditingController,
+                      decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
+                        border: OutlineInputBorder(),
+                        label: Text('Username'),
+                        labelStyle: TextStyle(color: textSecondary),
+                        floatingLabelStyle: TextStyle(color: themePrimary),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
+                      ),
+                    ).p(10),
+                    TextFormField(
+                      style: const TextStyle(color: textPrimary),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return '*First name cannot be empty';
+                        return null;
+                      },
+                      controller: firstNameTextEditingController,
+                      decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
+                        border: OutlineInputBorder(),
+                        label: Text('First Name'),
+                        labelStyle: TextStyle(color: textSecondary),
+                        floatingLabelStyle: TextStyle(color: themePrimary),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
+                      ),
+                    ).p(10),
+                    TextFormField(
+                      style: const TextStyle(color: textPrimary),
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) return '*Last Name cannot be empty';
+                        return null;
+                      },
+                      controller: lastNameTextEditingController,
+                      decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
+                        border: OutlineInputBorder(),
+                        label: Text('Last Name'),
+                        labelStyle: TextStyle(color: textSecondary),
+                        floatingLabelStyle: TextStyle(color: themePrimary),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
+                      ),
+                    ).p(10),
+                    TextFormField(
+                      style: const TextStyle(color: textPrimary),
+                      controller: emailTextEditingController,
+                      decoration: const InputDecoration(
+                        errorStyle: TextStyle(color: themeSecondary),
+                        border: OutlineInputBorder(),
+                        label: Text('Email (Optional)'),
+                        labelStyle: TextStyle(color: textSecondary),
+                        floatingLabelStyle: TextStyle(color: themePrimary),
+                        enabledBorder: OutlineInputBorder(borderSide: BorderSide(color: themePrimary)),
+                      ),
+                    ).p(10),
+                    Row(children: [
+                      ElevatedButton(
+                              onPressed: () async {
+                                FocusScopeNode currentFocus = FocusScope.of(context);
+
+                                if (!currentFocus.hasPrimaryFocus) {
+                                  currentFocus.unfocus();
+                                }
+                                if (formKey.currentState!.validate()) {
+                                  LoadingScreen(mainContext).show();
+                                  ref
+                                      .watch(userNotifierProvider.notifier)
+                                      .editProfile(usernameTextEditingController.text, firstNameTextEditingController.text, lastNameTextEditingController.text,
+                                          emailTextEditingController.text)
+                                      .then((value) {
+                                    LoadingScreen(mainContext).hide();
+                                    messageSnackbar(mainContext, ref.watch(apiMessageStateProvider));
+                                    Navigator.of(context).pop();
+                                  }).catchError((err, st) {
+                                    LoadingScreen(mainContext).hide();
+                                    messageSnackbar(mainContext, Util.apiError(err));
+                                    Navigator.of(context).pop();
+                                  });
+                                }
+                              },
+                              child: const Text(
+                                'Reset Password',
+                              ).p(15))
+                          .exp()
+                    ]).pLTRB(10, 20, 10, 10),
+                    // const Spacer(
+                    //   flex: 4,
+                    // )
+                  ]).p(20),
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   void hide() {
