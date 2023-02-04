@@ -71,13 +71,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               children: [
                                                 Text(
                                                   'Add New To do',
-                                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
+                                                  style: Theme.of(context).textTheme.titleMedium,
                                                 ).p(15),
                                                 TextFormField(
                                                   autofocus: true,
                                                   textCapitalization: TextCapitalization.sentences,
                                                   controller: ref.watch(todoTextEditingStateProvider),
-                                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
                                                   minLines: 1,
                                                   maxLines: 1,
                                                 ).pLTRB(20, 0, 20, 0),
@@ -118,10 +117,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           const DrawerHeader(child: Logo()),
                           Column(
                             children: [
-                              const Divider(
-                                color: textSecondary,
-                                height: 0,
-                              ),
                               ListTile(
                                   title: RichText(
                                       maxLines: 3,
@@ -130,11 +125,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                           style: ref
                                               .watch(textThemeProvider(context))
                                               .bodyMedium
-                                              ?.copyWith(fontSize: ref.watch(textThemeProvider(context)).titleLarge?.fontSize, color: textPrimary),
+                                              ?.copyWith(fontSize: ref.watch(textThemeProvider(context)).titleMedium?.fontSize, color: textPrimary),
                                           children: [
                                             TextSpan(
                                                 text: ref.watch(userNotifierProvider).username,
-                                                style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary))
+                                                style: ref.watch(textThemeProvider(context)).titleMedium?.copyWith(color: themePrimary))
                                           ]))),
                             ],
                           ),
@@ -150,7 +145,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       enabled: false,
                                       title: Text(
                                         'Account',
-                                        style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary),
+                                        style: ref.watch(textThemeProvider(context)).titleMedium?.copyWith(color: themePrimary),
                                       ),
                                     ),
                                     ListTile(
@@ -173,19 +168,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       enabled: false,
                                       title: Text(
                                         'Account',
-                                        style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary),
+                                        style: ref.watch(textThemeProvider(context)).titleMedium?.copyWith(color: themePrimary),
                                       ),
                                     ),
                                     ListTile(
-                                      title: Text(
+                                      title: const Text(
                                         'Login',
-                                        style: ref.watch(textThemeProvider(context)).bodyLarge?.copyWith(color: textPrimary),
+                                        style: TextStyle(color: textPrimary),
                                       ),
                                       onTap: () => Navigator.of(context).push(LoginScreen.route()),
                                     ),
                                     ListTile(
                                       title: const Text(
                                         'Register',
+                                        style: TextStyle(color: textPrimary),
                                       ),
                                       onTap: () => Navigator.of(context).push(RegisterScreen.route()),
                                     ),
@@ -200,19 +196,20 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             enabled: false,
                             title: Text(
                               'Others',
-                              style: ref.watch(textThemeProvider(context)).titleLarge?.copyWith(color: themePrimary),
+                              style: ref.watch(textThemeProvider(context)).titleMedium?.copyWith(color: themePrimary),
                             ),
                           ),
                           ListTile(
-                            title: Text(
+                            title: const Text(
                               'Privacy Policy',
-                              style: ref.watch(textThemeProvider(context)).bodyLarge?.copyWith(color: textPrimary),
+                              style: TextStyle(color: textPrimary),
                             ),
                             onTap: () => Navigator.of(context).push(OthersScreen.route('Privacy Policy')),
                           ),
                           ListTile(
                               title: const Text(
                                 'Terms of Use',
+                                style: TextStyle(color: textPrimary),
                               ),
                               onTap: () => Navigator.of(context).push(OthersScreen.route('Terms of Use'))),
                           const SizedBox().exp(),
@@ -253,122 +250,119 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   index: ref.watch(screenStateProvider),
                   children: screens,
                 ),
-                bottomNavigationBar: BottomAppBar(
-                  color: backgroundPrimary,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ExpansionAnimation(
-                        expand: _loginMessage,
-                        child: Container(
-                            color: themePrimary,
-                            child: SafeArea(
-                              child: Stack(children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'You are not logged in.',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: backgroundPrimary),
-                                    ).p(15),
-                                    TextButton(
-                                        onPressed: () => Navigator.of(context).push(LoginScreen.route()),
-                                        style: TextButton.styleFrom(backgroundColor: backgroundPrimary, elevation: 0),
-                                        child: Text(
-                                          'Login now',
-                                          style: ref.watch(textThemeProvider(context)).bodyMedium?.copyWith(color: Colors.white),
-                                        ))
-                                  ],
-                                ),
-                                Positioned(
-                                    right: 5,
-                                    child: IconButton(
-                                        splashRadius: 0.1,
-                                        onPressed: () {
-                                          _loginMessage = !_loginMessage;
-                                          setState(() {});
-                                        },
-                                        icon: const Icon(
-                                          Icons.close,
-                                          color: backgroundPrimary,
-                                        )))
-                              ]),
-                            )),
-                      ),
-                      SizedBox(
-                        height: 70,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Row(
+                bottomNavigationBar: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ExpansionAnimation(
+                      expand: _loginMessage,
+                      child: Container(
+                          color: themePrimary,
+                          child: SafeArea(
+                            child: Stack(children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Expanded(
-                                      child: GestureDetector(
-                                    onTap: (() {
-                                      if (ref.watch(screenStateProvider) != 0) ref.watch(screenStateProvider.notifier).state = 0;
-                                    }),
-                                    child: Container(
-                                      color: ref.watch(screenStateProvider) == 0 ? themePrimary : backgroundPrimary,
-                                      margin: EdgeInsets.zero,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: ref.watch(screenStateProvider) == 0
-                                            ? [const Icon(Icons.today, color: backgroundPrimary), const Text('Todo', style: TextStyle(color: backgroundPrimary))]
-                                            : [
-                                                const Icon(Icons.today_outlined, color: textSecondary),
-                                                const Text(
-                                                  'Todo',
-                                                  style: TextStyle(color: textSecondary),
-                                                )
-                                              ],
-                                      ),
-                                    ),
-                                  )),
-                                  Expanded(
-                                      child: GestureDetector(
-                                    onTap: (() {
-                                      if (ref.watch(screenStateProvider) != 1) ref.watch(screenStateProvider.notifier).state = 1;
-                                    }),
-                                    child: Container(
-                                      color: ref.watch(screenStateProvider) == 1 ? themePrimary : backgroundPrimary,
-                                      margin: EdgeInsets.zero,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: ref.watch(screenStateProvider) == 1
-                                            ? [
-                                                const Icon(
-                                                  Icons.book,
-                                                  color: backgroundPrimary,
-                                                ),
-                                                const Text('Diary', style: TextStyle(color: backgroundPrimary)),
-                                              ]
-                                            : [
-                                                const Icon(
-                                                  Icons.book_outlined,
-                                                  color: textSecondary,
-                                                ),
-                                                const Text(
-                                                  'Diary',
-                                                  style: TextStyle(color: textSecondary),
-                                                )
-                                              ],
-                                      ),
-                                    ),
-                                  )),
+                                  const Text(
+                                    'You are not logged in.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: backgroundPrimary),
+                                  ).p(15),
+                                  TextButton(
+                                      onPressed: () => Navigator.of(context).push(LoginScreen.route()),
+                                      style: TextButton.styleFrom(backgroundColor: backgroundPrimary, elevation: 0),
+                                      child: Text(
+                                        'Login now',
+                                        style: ref.watch(textThemeProvider(context)).bodyMedium?.copyWith(color: Colors.white),
+                                      ))
                                 ],
                               ),
+                              Positioned(
+                                  right: 5,
+                                  child: IconButton(
+                                      splashRadius: 0.1,
+                                      onPressed: () {
+                                        _loginMessage = !_loginMessage;
+                                        setState(() {});
+                                      },
+                                      icon: const Icon(
+                                        Icons.close,
+                                        color: backgroundPrimary,
+                                      )))
+                            ]),
+                          )),
+                    ),
+                    SizedBox(
+                      height: 70,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: GestureDetector(
+                                  onTap: (() {
+                                    if (ref.watch(screenStateProvider) != 0) ref.watch(screenStateProvider.notifier).state = 0;
+                                  }),
+                                  child: Container(
+                                    color: ref.watch(screenStateProvider) == 0 ? themePrimary : backgroundPrimary,
+                                    margin: EdgeInsets.zero,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: ref.watch(screenStateProvider) == 0
+                                          ? [const Icon(Icons.today, color: backgroundPrimary), const Text('Todo', style: TextStyle(color: backgroundPrimary))]
+                                          : [
+                                              const Icon(Icons.today_outlined, color: textSecondary),
+                                              const Text(
+                                                'Todo',
+                                                style: TextStyle(color: textSecondary),
+                                              )
+                                            ],
+                                    ),
+                                  ),
+                                )),
+                                Expanded(
+                                    child: GestureDetector(
+                                  onTap: (() {
+                                    if (ref.watch(screenStateProvider) != 1) ref.watch(screenStateProvider.notifier).state = 1;
+                                  }),
+                                  child: Container(
+                                    color: ref.watch(screenStateProvider) == 1 ? themePrimary : backgroundPrimary,
+                                    margin: EdgeInsets.zero,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: ref.watch(screenStateProvider) == 1
+                                          ? [
+                                              const Icon(
+                                                Icons.book,
+                                                color: backgroundPrimary,
+                                              ),
+                                              const Text('Diary', style: TextStyle(color: backgroundPrimary)),
+                                            ]
+                                          : [
+                                              const Icon(
+                                                Icons.book_outlined,
+                                                color: textSecondary,
+                                              ),
+                                              const Text(
+                                                'Diary',
+                                                style: TextStyle(color: textSecondary),
+                                              )
+                                            ],
+                                    ),
+                                  ),
+                                )),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 )))
         : Scaffold(
             body: Center(
-              child: Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Image.asset(
@@ -377,7 +371,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ).pb(20),
                 const Text('Loading...').pb(10),
               ],
-          ),
-            ));
+            ),
+          ));
   }
 }

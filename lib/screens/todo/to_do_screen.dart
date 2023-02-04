@@ -146,7 +146,10 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
                                                     borderRadius: BorderRadius.all(
                                                       Radius.circular(13),
                                                     )),
-                                                child: Text('Deleting ${todo.title}'),
+                                                child: Text(
+                                                  'Deleting ${todo.title}',
+                                                  style: const TextStyle(color: textPrimary),
+                                                ),
                                               ),
                                               action: SnackBarAction(
                                                 onPressed: () => setState(() {
@@ -270,10 +273,11 @@ class _CheckboxLTState extends ConsumerState<CheckboxLT> {
                       '${widget.todo.title} ',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(color: widget.todo.completed ? themePrimary : textPrimary, decoration: widget.todo.completed ? TextDecoration.lineThrough : null),
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            decorationColor: themePrimary,
+                            color: widget.todo.completed ? themePrimary : textPrimary,
+                            decoration: widget.todo.completed ? TextDecoration.lineThrough : null,
+                          ),
                     ).pl(16),
                   ),
                   widget.todo.completed
