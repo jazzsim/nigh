@@ -7,33 +7,21 @@ import '../constant.dart';
 
 messageSnackbar(BuildContext context, String message) {
   return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    content: Container(
-      decoration: const BoxDecoration(
-          color: themePrimary,
-          borderRadius: BorderRadius.all(
-            Radius.circular(13),
-          )),
-      child: Text(
-        message,
-        textAlign: TextAlign.center,
-      ).p(2),
-    ),
+    content: Text(
+      message,
+      textAlign: TextAlign.center,
+      style: const TextStyle(color: textPrimary),
+    ).p(2),
     behavior: SnackBarBehavior.floating,
   ));
 }
 
 todoSnackbar(BuildContext context, Todo item, [WidgetRef? ref]) {
   return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    content: Container(
-      decoration: const BoxDecoration(
-          color: themePrimary,
-          borderRadius: BorderRadius.all(
-            Radius.circular(13),
-          )),
-      child: Text(
-        item.completed ? 'Undo ${item.title}' : 'Completed "${item.title}"',
-        textAlign: TextAlign.center,
-      ),
+    content: Text(
+      item.completed ? 'Undo ${item.title}' : 'Completed "${item.title}"',
+      textAlign: TextAlign.center,
+      style: const TextStyle(color: textPrimary),
     ),
     behavior: SnackBarBehavior.floating,
   ));

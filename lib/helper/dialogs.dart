@@ -294,6 +294,7 @@ class PopUpDialogs {
                               },
                               child: const Text(
                                 'Reset Password',
+                                style: TextStyle(color: textPrimary),
                               ).p(15))
                           .exp()
                     ]).pLTRB(10, 20, 10, 10),
@@ -439,6 +440,7 @@ class PopUpDialogs {
                               },
                               child: const Text(
                                 'Reset Password',
+                                style: TextStyle(color: textPrimary),
                               ).p(15))
                           .exp()
                     ]).pLTRB(10, 20, 10, 10),

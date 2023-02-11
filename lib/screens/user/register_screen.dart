@@ -279,6 +279,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 },
                                 child: const Text(
                                   'Register',
+                                  style: TextStyle(color: textPrimary),
                                 ).p(15))
                             .exp()
                       ]).p(10),

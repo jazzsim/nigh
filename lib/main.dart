@@ -23,13 +23,22 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
           scaffoldBackgroundColor: backgroundPrimary,
           appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0, foregroundColor: themePrimary, backgroundColor: backgroundPrimary),
-          backgroundColor: backgroundPrimary,
-          brightness: Brightness.light,
+          colorScheme: const ColorScheme(
+            brightness: Brightness.light,
+            background: backgroundPrimary,
+            onBackground: themeSecondary,
+            primary: themePrimary,
+            onPrimary: textPrimary,
+            secondary: themeSecondary,
+            onSecondary: textPrimary,
+            surface: themePrimary,
+            onSurface: textPrimary,
+            error: themeSecondary,
+            onError: themeSecondary,
+          ),
+          useMaterial3: true,
           snackBarTheme: const SnackBarThemeData(backgroundColor: themePrimary),
-          textTheme: const TextTheme(
-            bodyText1: TextStyle(),
-            bodyText2: TextStyle(),
-          ).apply(
+          textTheme: const TextTheme().apply(
             bodyColor: textPrimary,
             displayColor: textPrimary,
             decorationColor: textPrimary,
