@@ -142,10 +142,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ).p(15))
                         .exp()
                   ]).p(10),
-                  const Divider(
-                    height: 0,
-                    color: textSecondary,
-                  ).pt(5),
+                  const Divider(height: 0).pt(5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

@@ -244,7 +244,7 @@ class _CheckboxLTState extends ConsumerState<CheckboxLT> {
                                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
                                       minLines: 1,
                                       maxLines: 1,
-                                    ),
+                                    ).pLTRB(20, 0, 20, 0),
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [

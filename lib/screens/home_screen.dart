@@ -70,7 +70,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
                                                 Text(
-                                                  'Add New To do',
+                                                  'Add new to do',
                                                   style: Theme.of(context).textTheme.titleMedium,
                                                 ).p(15),
                                                 TextFormField(
@@ -114,7 +114,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     child: SafeArea(
                       child: Column(
                         children: [
-                          const DrawerHeader(child: Logo()),
+                          const Logo(
+                            height: 180,
+                          ).pb(20),
+                          const Divider(
+                            color: textSecondary,
+                            height: 0,
+                          ),
                           Column(
                             children: [
                               ListTile(
@@ -149,7 +155,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       ),
                                     ),
                                     ListTile(
-                                      title: Text(
+                                      title: const Text(
                                         'Setting',
                                       ),
                                       onTap: () => Navigator.of(context).push(SettingScreen.route()),
@@ -257,39 +263,38 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       expand: _loginMessage,
                       child: Container(
                           color: themePrimary,
-                          child: SafeArea(
-                            child: Stack(children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Text(
-                                    'You are not logged in.',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: backgroundPrimary),
-                                  ).p(15),
-                                  TextButton(
-                                      onPressed: () => Navigator.of(context).push(LoginScreen.route()),
-                                      style: TextButton.styleFrom(backgroundColor: backgroundPrimary, elevation: 0),
-                                      child: Text(
-                                        'Login now',
-                                        style: ref.watch(textThemeProvider(context)).bodyMedium?.copyWith(color: Colors.white),
-                                      ))
-                                ],
-                              ),
-                              Positioned(
-                                  right: 5,
-                                  child: IconButton(
-                                      splashRadius: 0.1,
-                                      onPressed: () {
-                                        _loginMessage = !_loginMessage;
-                                        setState(() {});
-                                      },
-                                      icon: const Icon(
-                                        Icons.close,
-                                        color: backgroundPrimary,
-                                      )))
-                            ]),
-                          )),
+                          child: Stack(children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Text(
+                                  'You are not logged in.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(color: backgroundPrimary),
+                                ).p(15),
+                                TextButton(
+                                    onPressed: () => Navigator.of(context).push(LoginScreen.route()),
+                                    style: TextButton.styleFrom(backgroundColor: backgroundPrimary, elevation: 0),
+                                    child: Text(
+                                      'Login now',
+                                      style: ref.watch(textThemeProvider(context)).bodyMedium?.copyWith(color: Colors.white),
+                                      // ))
+                                    ).pLTRB(10, 0, 10, 0))
+                              ],
+                            ),
+                            Positioned(
+                                right: 5,
+                                child: IconButton(
+                                    splashRadius: 0.1,
+                                    onPressed: () {
+                                      _loginMessage = !_loginMessage;
+                                      setState(() {});
+                                    },
+                                    icon: const Icon(
+                                      Icons.close,
+                                      color: backgroundPrimary,
+                                    )))
+                          ])),
                     ),
                     SizedBox(
                       height: 70,
