@@ -159,7 +159,7 @@ class PopUpDialogs {
                                   });
                                 }
                               },
-                              child: Text('DELETE')),
+                              child: const Text('DELETE')),
                         ),
                       ],
                     ),
