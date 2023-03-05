@@ -34,7 +34,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final confirmPasswordTextEditingController = TextEditingController();
   final emailTextEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  bool _invalid = false;
   bool? _agree;
 
   @override
@@ -64,7 +63,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            _invalid = true;
                             return '*Please insert your first name';
                           }
                           return null;
@@ -83,7 +81,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            _invalid = true;
                             return '*Please insert your last name';
                           }
                           return null;
@@ -105,7 +102,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            _invalid = true;
                             return '*Username cannot be empty';
                           }
                           return null;
@@ -124,11 +120,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            _invalid = true;
                             return '*Password cannot be empty';
                           }
                           if (value.length < 8) {
-                            _invalid = true;
                             return '*Password must be at least 8 characters long';
                           }
                           return null;
@@ -160,11 +154,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            _invalid = true;
                             return '*Password cannot be empty';
                           }
                           if (value != passwordTextEditingController.text) {
-                            _invalid = true;
                             return '*Password must be matching';
                           }
                           return null;
@@ -194,7 +186,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       const Divider(color: textSecondary),
                       Text(
                         'Your email will only be used for password reset purposes.',
-                        style: ref.watch(textThemeProvider(context)).caption?.copyWith(color: textSecondary),
+                        style: ref.watch(textThemeProvider(context)).bodySmall?.copyWith(color: textSecondary),
                         textAlign: TextAlign.center,
                       ).p(5),
                       TextFormField(

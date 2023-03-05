@@ -49,4 +49,10 @@ abstract class UserApi {
     @Field("current_password") required String currentPassword,
     @Field("new_password") required String newPassword
     });
+
+  @POST('/fcm_token')
+  Future<ApiResponse<bool>> storeFcmToken({
+    @Field() required String token,
+    });
+  
 }

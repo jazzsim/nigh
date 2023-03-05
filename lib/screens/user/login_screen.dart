@@ -107,7 +107,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       height: 45,
                       child: TextButton(
                           onPressed: () => Navigator.of(context).push(ForgotPasswordScreen.route()),
-                          child: Text('Forgot password?', style: ref.watch(textThemeProvider(context)).caption?.copyWith(color: themePrimary))),
+                          child: Text('Forgot password?', style: ref.watch(textThemeProvider(context)).bodySmall?.copyWith(color: themePrimary))),
                     ),
                   ),
                   Row(children: [

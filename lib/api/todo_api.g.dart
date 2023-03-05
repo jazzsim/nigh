@@ -50,14 +50,18 @@ class _TodoApi implements TodoApi {
   Future<ApiResponse<Todo>> addTodo({
     required date,
     required title,
+    reminderTime,
   }) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = {
       'date': date,
       'title': title,
+      'reminder_time': reminderTime,
     };
+    _data.removeWhere((k, v) => v == null);
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<Todo>>(Options(
       method: 'POST',
@@ -103,11 +107,17 @@ class _TodoApi implements TodoApi {
   Future<void> edit({
     required id,
     required title,
+    reminderTime,
   }) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
-    final _data = {'title': title};
+    final _data = {
+      'title': title,
+      'reminder_time': reminderTime,
+    };
+    _data.removeWhere((k, v) => v == null);
     await _dio.fetch<void>(_setStreamType<void>(Options(
       method: 'PUT',
       headers: _headers,
