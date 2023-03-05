@@ -25,7 +25,6 @@ class _MyAppState extends ConsumerState<MyApp> {
   @override
   void initState() {
     super.initState();
-    ref.read(firebaseMessageProvider).initFirebase();
   }
 
   // This widget is the root of your application.

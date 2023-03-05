@@ -68,9 +68,7 @@ class PopUpDialogs {
     bool value = false;
     // show the loading dialog
     await showDialog(
-        // The user CANNOT close this dialog  by pressing outsite it
         barrierDismissible: true,
-        // barrierColor: Color.fromARGB(70, 105, 104, 104),
         barrierColor: const Color.fromARGB(149, 46, 56, 64),
         context: context,
         builder: (_) {

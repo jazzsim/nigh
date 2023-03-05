@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -9,9 +11,9 @@ import 'package:weekly_date_picker/weekly_date_picker.dart';
 import '../../animation/expansion_animation.dart';
 import '../../animation/rotate_animation.dart';
 import '../../api/model/todo.dart';
-import '../../components/loading_dialog.dart';
 import '../../components/snackbar.dart';
 import '../../constant.dart';
+import 'edit_to_do_screen.dart';
 
 final todoTextEditingStateProvider = StateProvider<TextEditingController>((ref) => TextEditingController());
 
@@ -32,7 +34,7 @@ class _ToDoScreenState extends ConsumerState<ToDoScreen> {
     ref.listen<bool>(todoLoadedStateProvider, ((previous, next) {
       _loaded = next;
     }));
-
+    // work on reminder UI for todo item and carry disable reminder after today
     return RefreshIndicator(
       onRefresh: (() => _getData()),
       color: textPrimary,
@@ -196,7 +198,6 @@ class CheckboxLT extends ConsumerStatefulWidget {
 }
 
 class _CheckboxLTState extends ConsumerState<CheckboxLT> {
-  final editTextEditingController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -212,59 +213,23 @@ class _CheckboxLTState extends ConsumerState<CheckboxLT> {
               onTap: widget.todo.completed
                   ? null
                   : () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext c) {
-                            editTextEditingController.text = widget.todo.title;
-                            return ProviderScope(
-                              parent: ProviderScope.containerOf(context),
-                              child: Dialog(
-                                backgroundColor: backgroundPrimary,
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text.rich(
-                                      TextSpan(
-                                        text: 'Edit ',
-                                        children: <InlineSpan>[
-                                          TextSpan(
-                                            text: widget.todo.title,
-                                            style: Theme.of(context).textTheme.titleLarge?.copyWith(color: themePrimary),
-                                          )
-                                        ],
-                                        style: Theme.of(context).textTheme.titleLarge?.copyWith(color: textPrimary),
-                                      ),
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                    ).p(15),
-                                    TextFormField(
-                                      autofocus: true,
-                                      textCapitalization: TextCapitalization.sentences,
-                                      controller: editTextEditingController,
-                                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: textPrimary),
-                                      minLines: 1,
-                                      maxLines: 1,
-                                    ).pLTRB(20, 0, 20, 0),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        TextButton(
-                                            onPressed: () async {
-                                              if (editTextEditingController.text.isEmpty) return;
-                                              LoadingScreen(context).show();
-                                              await ref.watch(todoNotifierProvider.notifier).edit(widget.todo.id, editTextEditingController.text);
-                                              if (!mounted) return;
-                                              LoadingScreen(context).hide();
-                                              Navigator.of(context).pop();
-                                            },
-                                            child: const Text('Edit'))
-                                      ],
-                                    ).pt(10)
-                                  ],
-                                ).p(10),
-                              ),
-                            );
-                          });
+                      if (widget.todo.reminderTime?.isNotEmpty ?? false) {
+                        String reminder = widget.todo.reminderTime!.substring(11, widget.todo.reminderTime!.length);
+                        ref.read(reminderDatetimeStateProvider.notifier).state = DateTime.parse(widget.todo.reminderTime!);
+                        ref.watch(reminderStateProvider.notifier).state = reminder;
+                        ref.read(hasReminderStateProvider.notifier).state = true;
+                      }
+                      showModalBottomSheet(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (_) {
+                          return EditTodoScreen(todo: widget.todo);
+                        },
+                      ).then((value) async {
+                        ref.read(todoTextEditingStateProvider).text = '';
+                        ref.invalidate(hasReminderStateProvider);
+                        ref.invalidate(reminderStateProvider);
+                      });
                     },
               child: Row(
                 children: [

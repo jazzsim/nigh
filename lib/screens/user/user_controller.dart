@@ -30,4 +30,9 @@ class UserNotifier extends StateNotifier<User> {
     final res = await userApi.changePassword(currentPassword: currentPassword, newPassword: newPassword);
     ref.watch(apiMessageStateProvider.notifier).state = res.message;
   }
+
+  Future<void> storeFcmToken(String token) async {
+    final userApi = UserApi();
+    await userApi.storeFcmToken(token: token);
+  }
 }

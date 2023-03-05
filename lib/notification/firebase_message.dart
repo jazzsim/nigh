@@ -3,6 +3,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/notification/local_notification.dart';
+import 'package:nigh/screens/user/user_controller.dart';
 
 final disabledNotification = StateProvider<bool>((ref) => true);
 
@@ -19,16 +20,27 @@ class FirebaseMessage {
   Future<void> initFirebase() async {
     print('init firebase');
     // check permission everytime
-    await checkPermission();
+    bool allowNotification = await checkPermission();
 
-    // proceed if notification is allowed
-    if (!ref.watch(disabledNotification)) {
+    // if notification allowed
+    if (allowNotification) {
+      await firebaseMessaging.getToken().then((value) {
+        print('getToken fcmToken $value');
+        // store token
+        ref.read(userNotifierProvider.notifier).storeFcmToken(value ?? '').catchError((err) {});
+      }).catchError((err) {
+        print('getToken err = $err');
+      });
+
+      // init flutter_local_notification methods
+      ref.read(localNotificationProvider).init();
+
       // set firebase listener
       messageListener();
     }
   }
 
-  Future<void> checkPermission() async {
+  Future<bool> checkPermission() async {
     NotificationSettings settings = await firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
@@ -39,18 +51,7 @@ class FirebaseMessage {
       sound: true,
     );
 
-    if (settings.authorizationStatus.name == AuthorizationStatus.authorized.name) {
-      ref.read(disabledNotification.notifier).state = false;
-
-      await firebaseMessaging.getToken().then((value) {
-        print('getToken fcmToken $value');
-      }).catchError((err) {
-        print('getToken err = $err');
-      });
-
-      // init flutter_local_notification methods
-      ref.read(localNotificationProvider).init();
-    }
+    return settings.authorizationStatus.name == AuthorizationStatus.authorized.name;
   }
 
   Future<void> messageListener() async {
