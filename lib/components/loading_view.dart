@@ -4,7 +4,7 @@ import 'dart:math' as math;
 import 'package:nigh/constant.dart';
 
 class LoadingView extends StatefulWidget {
-  LoadingView(double size, {super.key, this.color: backgroundPrimary, this.duration: const Duration(milliseconds: 600)}) : _size = Size(size, size);
+  LoadingView(double size, {super.key, this.color = backgroundPrimary, this.duration = const Duration(milliseconds: 600)}) : _size = Size(size, size);
 
   final Size _size;
   final Color color;
@@ -45,7 +45,7 @@ class _LoadingViewState extends State<LoadingView> with TickerProviderStateMixin
 class _LoadingViewPainter extends CustomPainter {
   _LoadingViewPainter(
     AnimationController repaint, {
-    this.color: Colors.white,
+    this.color = Colors.white,
   })  : animation = IntTween(begin: 0, end: _LoadingViewPainter._lineCount).animate(repaint),
         super(repaint: repaint);
 

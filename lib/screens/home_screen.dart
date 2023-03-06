@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/apptheme.dart';
-import 'package:nigh/components/loading_dialog.dart';
 import 'package:nigh/screens/setting_screen.dart';
 import 'package:nigh/screens/todo/to_do_screen.dart';
 import 'package:nigh/screens/user/login_controller.dart';
@@ -19,6 +18,7 @@ import 'diary/diary_controller.dart';
 import 'diary/edit_diary_screen.dart';
 import 'diary/diary_screen.dart';
 import 'others_screen.dart';
+import 'todo/edit_to_do_screen.dart';
 import 'todo/to_do_controller.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
@@ -52,55 +52,22 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         ? WillPopScope(
             onWillPop: () async => false,
             child: Scaffold(
+                resizeToAvoidBottomInset: true,
                 appBar: ref.watch(screenStateProvider) == 0
                     ? AppBar(title: const Text('To Do'), actions: [
                         ref.watch(todoDatetimeStateProvider).day == DateTime.now().day || ref.watch(todoDatetimeStateProvider).isAfter(DateTime.now())
                             ? IconButton(
                                 splashRadius: 0.1,
                                 onPressed: () {
-                                  ref.watch(todoTextEditingStateProvider).text = '';
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext c) {
-                                        return ProviderScope(
-                                          parent: ProviderScope.containerOf(context),
-                                          child: Dialog(
-                                            backgroundColor: backgroundPrimary,
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  'Add new to do',
-                                                  style: Theme.of(context).textTheme.titleMedium,
-                                                ).p(15),
-                                                TextFormField(
-                                                  autofocus: true,
-                                                  textCapitalization: TextCapitalization.sentences,
-                                                  controller: ref.watch(todoTextEditingStateProvider),
-                                                  minLines: 1,
-                                                  maxLines: 1,
-                                                ).pLTRB(20, 0, 20, 0),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  children: [
-                                                    TextButton(
-                                                        onPressed: () async {
-                                                          if (ref.watch(todoTextEditingStateProvider).text.isEmpty) return;
-                                                          // add Todo
-                                                          LoadingScreen(context).show();
-                                                          await ref.watch(todoNotifierProvider.notifier).add();
-                                                          if (!mounted) return;
-                                                          LoadingScreen(context).hide();
-                                                          Navigator.of(context).pop();
-                                                        },
-                                                        child: const Text('Add'))
-                                                  ],
-                                                ).pt(10)
-                                              ],
-                                            ).p(10),
-                                          ),
-                                        );
-                                      });
+                                  showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (_) => const EditTodoScreen(),
+                                  ).then((value) {
+                                    ref.watch(todoTextEditingStateProvider).text = '';
+                                    ref.invalidate(hasReminderStateProvider);
+                                    ref.invalidate(reminderStateProvider);
+                                  });
                                 },
                                 icon: const Icon(Icons.add))
                             : const SizedBox()

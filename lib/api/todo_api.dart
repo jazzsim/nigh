@@ -18,20 +18,31 @@ abstract class TodoApi {
   static final _instance = _TodoApi(dio, baseUrl: '$kApiUrl/todos');
 
   @GET('/')
-  Future<ApiResponse<List<Todo>>> getTodos({@Query("date") required String date});
+  Future<ApiResponse<List<Todo>>> getTodos({
+    @Query("date") required String date,
+  });
 
   @POST('')
   Future<ApiResponse<Todo>> addTodo({
     @Field() required String date,
     @Field() required String title,
+    @Field("reminder_time") required String? reminderTime,
   });
 
   @PUT('/complete')
-  Future<void> complete({@Query('id') required int id});
+  Future<void> complete({
+    @Query('id') required int id,
+  });
 
   @PUT('/{id}')
-  Future<void> edit({@Path('id') required int id, @Field('title') required String title});
+  Future<void> edit({
+    @Path('id') required int id,
+    @Field('title') required String title,
+    @Field("reminder_time") required String? reminderTime,
+  });
 
   @DELETE('/{id}')
-  Future<void> delete({@Path('id') required int id});
+  Future<void> delete({
+    @Path('id') required int id,
+  });
 }

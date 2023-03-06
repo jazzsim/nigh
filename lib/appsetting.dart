@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/screens/diary/diary_controller.dart';
 import 'package:nigh/screens/user/login_controller.dart';
 
+import 'notification/firebase_message.dart';
 import 'screens/todo/to_do_controller.dart';
 
 final apiMessageStateProvider = StateProvider<String>((ref) => '');
@@ -36,5 +37,7 @@ class AppSetting {
     ref.invalidate(todoNotifierProvider);
     ref.read(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
     ref.read(diaryNotifierProvider.notifier).getDiaries(ref.watch(diaryDatetimeStateProvider).toString());
+
+    ref.read(firebaseMessageProvider).initFirebase();
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nigh/constant.dart';
-import '../appsetting.dart';
 import 'loading_view.dart';
 
 class LoadingScreen {

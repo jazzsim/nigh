@@ -12,6 +12,12 @@ final todoDatetimeStateProvider = StateProvider<DateTime>((ref) => DateTime.now(
 
 final dateStateProvider = StateProvider<String>((ref) => ref.watch(todoDatetimeStateProvider).toString().substring(0, 10));
 
+final reminderDatetimeStateProvider = StateProvider<DateTime>((ref) => DateTime.now());
+
+final hasReminderStateProvider = StateProvider<bool>((ref) => false);
+
+final reminderStateProvider = StateProvider<String?>((ref) => null);
+
 final todoNotifierProvider = StateNotifierProvider<TodosNotifier, Map<String, List<Todo>>>((ref) => TodosNotifier(ref));
 
 class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
@@ -40,9 +46,9 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
     ref.watch(todoLoadedStateProvider.notifier).state = true;
   }
 
-  Future<void> add() async {
+  Future<void> add(String? reminderTime) async {
     final todoApi = TodoApi();
-    final res = await todoApi.addTodo(date: ref.watch(todoDatetimeStateProvider).toString(), title: ref.watch(todoTextEditingStateProvider).text);
+    final res = await todoApi.addTodo(date: ref.watch(todoDatetimeStateProvider).toString(), title: ref.watch(todoTextEditingStateProvider).text, reminderTime: reminderTime);
     Todo newTodo = res.response;
     newTodo = newTodo.copyWith(date: newTodo.date.substring(0, 10));
 
@@ -88,9 +94,9 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
     state = {...newTodoState};
   }
 
-  Future<void> edit(int todoId, String title) async {
+  Future<void> edit(int todoId, String title, String? reminderTime) async {
     final todoApi = TodoApi();
-    await todoApi.edit(id: todoId, title: title);
+    await todoApi.edit(id: todoId, title: title, reminderTime: reminderTime);
 
     Map<String, List<Todo>> test = {};
     List<Todo> todoList = [];
@@ -131,44 +137,7 @@ class TodosNotifier extends StateNotifier<Map<String, List<Todo>>> {
     state = {...test};
   }
 
-  // void addTodos(List<Todo> todos) {
-  //   state = [...state, ...todos];
-  // }
+  void setReminderDateTime(DateTime timerDateTime) => ref.watch(reminderDatetimeStateProvider.notifier).state = timerDateTime;
 
-  // void addTodo(Todo todo) {
-  //   state = [...state, todo];
-  // }
-
-  // void editTodo(int todoId, String title) {
-  //   state = [
-  //     for (final todo in state)
-  //       if (todo.id == todoId) todo.copyWith(id: todo.id, date: todo.date, title: desc, completed: todo.completed) else todo,
-  //   ];
-  // }
-
-  // void removeTodo(int todoId) {
-  //   state = [
-  //     for (final todo in state)
-  //       if (todo.id != todoId) todo,
-  //   ];
-  // }
-
-  // void toggle(int todoId) {
-  //   Map<String, List<Todo>> test = {};
-  //   List<Todo> todoList = [];
-
-  //   for (var element in state.entries) {
-  //     if (ref.read(dateStateProvider.notifier).state == element.key) {
-  //       for (var todo in element.value) {
-  //         if (todo.id == todoId) {
-  //           todo = todo.copyWith(completed: !todo.completed);
-  //         }
-  //         todoList.add(todo);
-  //       }
-  //       test.addAll({element.key: todoList});
-  //     }
-  //   }
-
-  //   state = {...test};
-  // }
+  void setReminder(String timer) => ref.watch(reminderStateProvider.notifier).state = timer;
 }

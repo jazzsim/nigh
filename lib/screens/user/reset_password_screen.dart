@@ -70,11 +70,11 @@ class _ResetPasswordEmailScreenState extends ConsumerState<ResetPasswordEmailScr
                 children: [
                   Text(
                     'Step One',
-                    style: ref.watch(textThemeProvider(context)).headline3?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).headline1?.fontWeight),
+                    style: ref.watch(textThemeProvider(context)).displaySmall?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).displayLarge?.fontWeight),
                   ),
                   Text(
                     'Before we proceed, please enter your username and email for verification purposes.',
-                    style: ref.watch(textThemeProvider(context)).headline5?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).headline1?.fontWeight),
+                    style: ref.watch(textThemeProvider(context)).headlineSmall?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).displayLarge?.fontWeight),
                   ).pb(20).pl(5),
                 ],
               ).pb(50),
@@ -200,11 +200,11 @@ class ResetPasswordCodeScreenState extends ConsumerState<ResetPasswordCodeScreen
                   children: [
                     Text(
                       'Step Two',
-                      style: ref.watch(textThemeProvider(context)).headline2?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).headline1?.fontWeight),
+                      style: ref.watch(textThemeProvider(context)).displayMedium?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).displayLarge?.fontWeight),
                     ),
                     Text(
                       'We had sent a verification code to your email, please enter the code from the email to proceed.',
-                      style: ref.watch(textThemeProvider(context)).headline5?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).headline1?.fontWeight),
+                      style: ref.watch(textThemeProvider(context)).headlineSmall?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).displayLarge?.fontWeight),
                     ).pb(20).pl(5),
                   ],
                 ).pb(50),
@@ -278,7 +278,6 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
   final passwordTextEditingController = TextEditingController();
   final confirmPasswordTextEditingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  bool _invalid = false;
 
   @override
   Widget build(BuildContext context) {
@@ -309,11 +308,11 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
                   children: [
                     Text(
                       'Step Three',
-                      style: ref.watch(textThemeProvider(context)).headline2?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).headline1?.fontWeight),
+                      style: ref.watch(textThemeProvider(context)).displayMedium?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).displayLarge?.fontWeight),
                     ),
                     Text(
                       'Completed account verification. Thank you for your time, now let\'s reset your new password.',
-                      style: ref.watch(textThemeProvider(context)).headline5?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).headline1?.fontWeight),
+                      style: ref.watch(textThemeProvider(context)).headlineSmall?.copyWith(color: textPrimary, fontWeight: ref.watch(textThemeProvider(context)).displayLarge?.fontWeight),
                     ).pb(20).pl(5),
                   ],
                 ).pb(50),
@@ -325,11 +324,9 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          _invalid = true;
                           return '*Password cannot be empty';
                         }
                         if (value.length < 8) {
-                          _invalid = true;
                           return '*Password must be at least 8 characters long';
                         }
                         return null;
@@ -361,11 +358,9 @@ class _ResetPasswordResetScreenState extends ConsumerState<ResetPasswordResetScr
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          _invalid = true;
                           return '*Password cannot be empty';
                         }
                         if (value != passwordTextEditingController.text) {
-                          _invalid = true;
                           return '*Password must be matching';
                         }
                         return null;
