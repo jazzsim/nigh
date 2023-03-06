@@ -214,9 +214,9 @@ class _CheckboxLTState extends ConsumerState<CheckboxLT> {
                   ? null
                   : () {
                       if (widget.todo.reminderTime?.isNotEmpty ?? false) {
-                        String reminder = widget.todo.reminderTime!.substring(11, widget.todo.reminderTime!.length);
+                        String reminder = DateFormat("h:mma").format(DateTime.parse((widget.todo.reminderTime!)));
                         ref.read(reminderDatetimeStateProvider.notifier).state = DateTime.parse(widget.todo.reminderTime!);
-                        ref.watch(reminderStateProvider.notifier).state = reminder;
+                        ref.read(reminderStateProvider.notifier).state = reminder;
                         ref.read(hasReminderStateProvider.notifier).state = true;
                       }
                       showModalBottomSheet(
@@ -226,34 +226,69 @@ class _CheckboxLTState extends ConsumerState<CheckboxLT> {
                           return EditTodoScreen(todo: widget.todo);
                         },
                       ).then((value) async {
-                        ref.read(todoTextEditingStateProvider).text = '';
+                        if (value ?? false) {
+                          ref.invalidate(todoNotifierProvider);
+                          await ref.watch(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
+                        }
+                        await Future.delayed(const Duration(milliseconds: 500));
+                        ref.invalidate(reminderDatetimeStateProvider);
                         ref.invalidate(hasReminderStateProvider);
                         ref.invalidate(reminderStateProvider);
+                        ref.invalidate(todoTextEditingStateProvider);
                       });
                     },
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Flexible(
-                    child: Text(
-                      '${widget.todo.title} ',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            decorationColor: themePrimary,
-                            color: widget.todo.completed ? themePrimary : textPrimary,
-                            decoration: widget.todo.completed ? TextDecoration.lineThrough : null,
-                          ),
-                    ).pl(16),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          '${widget.todo.title} ',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                decorationColor: themePrimary,
+                                color: widget.todo.completed ? themePrimary : textPrimary,
+                                decoration: widget.todo.completed ? TextDecoration.lineThrough : null,
+                              ),
+                        ),
+                      ),
+                      widget.todo.completed
+                          ? const SizedBox()
+                          : const Icon(
+                              Icons.edit,
+                              color: textPrimary,
+                              size: 16,
+                            )
+                    ],
                   ),
-                  widget.todo.completed
-                      ? const SizedBox()
-                      : const Icon(
-                          Icons.edit,
-                          color: textPrimary,
-                          size: 16,
+                  (widget.todo.reminderTime?.isNotEmpty ?? false) && !widget.todo.completed
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            DateTime.now().isBefore((DateTime.parse(widget.todo.reminderTime ?? '')))
+                                ? const Icon(
+                                    Icons.notifications_active,
+                                    color: themePrimary,
+                                    size: 16,
+                                  )
+                                : const Icon(
+                                    Icons.notifications,
+                                    color: textSecondary,
+                                    size: 16,
+                                  ),
+                            Text(
+                              '  ${DateFormat("h:mma").format(DateTime.parse(widget.todo.reminderTime!))}',
+                              style: DateTime.now().isBefore((DateTime.parse(widget.todo.reminderTime ?? '')))
+                                  ? const TextStyle(color: textPrimary)
+                                  : const TextStyle(color: textSecondary),
+                            )
+                          ],
                         )
+                      : const SizedBox()
                 ],
-              ),
+              ).pl(16),
             ).exp(8),
             Checkbox(shape: const CircleBorder(), checkColor: backgroundPrimary, value: widget.todo.completed, onChanged: (value) => _toggle()).pr(12)
           ],

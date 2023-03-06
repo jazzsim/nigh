@@ -61,8 +61,9 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
                       ],
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(color: textPrimary),
                     ),
-                    maxLines: 1,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
                   )
                 : Text(
                     'Add new to do',
@@ -70,7 +71,7 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
                   ),
             actions: ref.watch(todoDatetimeStateProvider).day == DateTime.now().day || ref.watch(todoDatetimeStateProvider).isAfter(DateTime.now())
                 ? [
-                    TextButton(
+                    IconButton(
                         onPressed: () async {
                           if (ref.watch(disabledNotification)) {
                             // check again
@@ -86,7 +87,7 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
                           ref.watch(hasReminderStateProvider.notifier).state = !ref.watch(hasReminderStateProvider);
                           if (!ref.watch(hasReminderStateProvider)) reminderTime = null;
                         },
-                        child: ref.watch(hasReminderStateProvider)
+                        icon: ref.watch(hasReminderStateProvider)
                             ? const Icon(Icons.notifications)
                             : const Icon(
                                 Icons.notifications_off,
@@ -134,7 +135,7 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
                                           reminderTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(value);
                                           // for UI
                                           ref.watch(reminderDatetimeStateProvider.notifier).state = value;
-                                          ref.watch(reminderStateProvider.notifier).state = DateFormat("hh:mm a").format(value);
+                                          ref.watch(reminderStateProvider.notifier).state = DateFormat("h:mma").format(value);
                                         }),
                                       ),
                                     ),
@@ -154,14 +155,13 @@ class _EditTodoScreenState extends ConsumerState<EditTodoScreen> {
                     if (ref.watch(todoTextEditingStateProvider).text.isEmpty) return;
                     // add Todo
                     LoadingScreen(context).show();
+                    if (!ref.watch(hasReminderStateProvider)) reminderTime = null;
                     edit
                         ? await ref.watch(todoNotifierProvider.notifier).edit(widget.todo?.id ?? 0, ref.watch(todoTextEditingStateProvider).text, reminderTime)
                         : await ref.watch(todoNotifierProvider.notifier).add(reminderTime);
-                    ref.invalidate(todoNotifierProvider);
-                    await ref.watch(todoNotifierProvider.notifier).getTodos(ref.watch(todoDatetimeStateProvider).toString());
                     if (!mounted) return;
                     LoadingScreen(context).hide();
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pop(true);
                   },
                   child: Text(edit ? 'Edit' : 'Add'))
             ],
