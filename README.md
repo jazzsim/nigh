@@ -20,19 +20,18 @@
 </p>
 
 <p align="center">
-  <img width="350" alt="Screenshot 2023-01-30 at 8 50 25 PM" src="https://user-images.githubusercontent.com/24294128/215481770-4ab89b37-d6fa-4b27-94b2-8f1de1566878.png">
-  <img width="350" alt="Screenshot 2023-01-30 at 8 49 00 PM" src="https://user-images.githubusercontent.com/24294128/215481491-807c57df-9ba7-43fc-97bb-47e71928fd33.png">
-  <img width="350" alt="Screenshot 2023-01-30 at 8 41 34 PM" src="https://user-images.githubusercontent.com/24294128/215480354-849bf87b-b6ca-4203-ab0a-1f016ef81d5c.png">
-  <img width="350" alt="Screenshot 2023-01-30 at 8 42 37 PM" src="https://user-images.githubusercontent.com/24294128/215480364-977e3bd6-931d-4c84-9444-1c72efbb4661.png">
+  <img width="350" alt="Screenshot 2023-01-30 at 8 50 25 PM" src="https://user-images.githubusercontent.com/24294128/223398223-3ade2a19-d12a-4a31-bb15-75607ec40c50.png">
+  <img width="350" alt="Screenshot 2023-01-30 at 8 41 34 PM" src="https://user-images.githubusercontent.com/24294128/223398789-16ad50e5-2d10-40c3-b58c-e981e94cc17f.png">
+  <img width="350" alt="Screenshot 2023-01-30 at 8 41 34 PM" src="https://user-images.githubusercontent.com/24294128/223398301-268412c1-cafb-4617-965a-4a671eff59c7.png">
+  <img width="350" alt="Screenshot 2023-01-30 at 8 42 37 PM" src="https://user-images.githubusercontent.com/24294128/223398801-ff957c41-2c4d-4e07-95cf-51cf13b65389.png">
 </p>
-
 
 
 ## About
 
 This is a simple to-do list and diary application made in Flutter.
 
-The main purpose of this application is for me to go through the whole process of developing a mobile application from scratch and publishing it on both [Android](https://play.google.com/store/apps/details?id=com.qubitlink.nigh) and iOS platforms.
+The main purpose of this application is for me to go through the whole process of developing a mobile application from scratch and publishing it on both [Android](https://play.google.com/store/apps/details?id=com.qubitlink.nigh) and [iOS](https://apps.apple.com/us/app/nigh/id1668527380) platforms.
 
 This project is built with the following technology:
 
@@ -40,7 +39,9 @@ This project is built with the following technology:
   - This project relies on [Riverpod](https://riverpod.dev) for state management
 - [Laravel](https://laravel.com) for developing backend API
 - [phpMyAdmin](https://www.phpmyadmin.net) to administrate both staging and live databases
-- [DirectAdmin](https://www.directadmin.com) for managing server-related features, like creating emails, changing the PHP version, obtaining SMTP settings, creating databases, etc.
+- [Firebase](https://www.firebase.google.com/) for sending reminder notification 
+- [DirectAdmin](https://www.directadmin.com) for managing server-related features, such as creating emails, databases, cronjobs, etc.
+  - Running a cronjob every minute to send reminders
 
 ## Contact
 
